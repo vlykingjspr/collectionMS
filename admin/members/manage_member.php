@@ -50,8 +50,8 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
 			</select> -->
 		</div>
 		<div class="form-group">
-			<label for="contact" class="control-label">Contact #</label>
-			<input name="contact" id="contact" type="text" class="form-control form-control-sm rounded-0" value="<?php echo isset($contact) ? $contact : ''; ?>" required>
+			<label for="rfid" class="control-label">rfid #</label>
+			<input name="rfid" id="rfid" type="text" class="form-control form-control-sm rounded-0" value="<?php echo isset($rfid) ? $rfid : ''; ?>" required>
 		</div>
 		<div class="form-group">
 			<label for="phase_id" class="control-label">Phase</label>

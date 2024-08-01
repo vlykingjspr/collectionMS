@@ -36,8 +36,8 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
                                 <dd class="pl-3"><b><?= isset($fullname) ? ucwords($fullname) : 'N/A' ?></b></dd>
                                 <dt class="text-muted">School ID </dt>
                                 <dd class="pl-3"><b><?= isset($school_id) ? $school_id : 'N/A' ?></b></dd>
-                                <dt class="text-muted">Contact #</dt>
-                                <dd class="pl-3"><small><?= isset($contact) ? $contact : 'N/A' ?></small></dd>
+                                <dt class="text-muted">Rfid </dt>
+                                <dd class="pl-3"><small><?= isset($rfid) ? $rfid : 'N/A' ?></small></dd>
                                 <dt class="text-muted">Phase</dt>
                                 <dd class="pl-3"><b><?= isset($phase) ? format_num($phase) : 'N/A' ?></b></dd>
                                 <dt class="text-muted">Block</dt>
