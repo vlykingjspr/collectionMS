@@ -71,8 +71,8 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
 		</div>
 
 		<div class="form-group">
-			<label for="lot" class="control-label">Set</label>
-			<input name="lot" id="lot" type="text" class="form-control form-control-sm rounded-0 text-right" value="<?php echo isset($lot) ? $lot : ''; ?>" required>
+			<label for="set" class="control-label">Set</label>
+			<input name="set" id="set" type="text" class="form-control form-control-sm rounded-0 text-right" value="<?php echo isset($set) ? $set : ''; ?>" required>
 		</div>
 		<div class="form-group">
 			<label for="status" class="control-label">Status</label>

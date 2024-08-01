@@ -43,7 +43,7 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
                                 <dt class="text-muted">Year Level</dt>
                                 <dd class="pl-3"><b><?= isset($block) ? format_num($block) : 'N/A' ?></b></dd>
                                 <dt class="text-muted">Set</dt>
-                                <dd class="pl-3"><b><?= isset($lot) ? format_num($lot) : 'N/A' ?></b></dd>
+                                <dd class="pl-3"><b><?= isset($set) ? format_num($set) : 'N/A' ?></b></dd>
                                 <dt class="text-muted">Status</dt>
                                 <dd class="pl-3">
                                     <?php if ($status == 1) : ?>

@@ -47,7 +47,7 @@
 								<td><?php echo ucwords($row['fullname']) ?></td>
 								<td><?= ucwords((isset($phase_arr[$row['phase_id']]) ? $phase_arr[$row['phase_id']] : "N/A"))
 
-										. '  ' . $row['block'] . '  ' . $row['lot']
+										. '  ' . $row['block'] . '  ' . $row['set']
 									?></td>
 								<td class="text-center">
 									<?php if ($row['status'] == 1) : ?>
