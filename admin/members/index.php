@@ -36,7 +36,7 @@
 					<tbody>
 						<?php
 						$i = 1;
-						$phases = $conn->query("SELECT * FROM `phase_list` where id in (SELECT phase_id FROM `member_list` where delete_flag = 0)");
+						$phases = $conn->query("SELECT * FROM `program_list` where id in (SELECT phase_id FROM `member_list` where delete_flag = 0)");
 						$phase_arr = array_column($phases->fetch_all(MYSQLI_ASSOC), 'name', 'id');
 						$qry = $conn->query("SELECT *,CONCAT(firstname, ' ', COALESCE(middlename,''), ' ', lastname) as fullname from `member_list` where delete_flag = 0 order by (CONCAT(firstname, ' ', COALESCE(middlename,''), ' ', lastname)) asc ");
 						while ($row = $qry->fetch_assoc()) :

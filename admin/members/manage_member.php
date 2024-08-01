@@ -54,7 +54,7 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
 			<select name="phase_id" id="phase_id" class="form-control form-control-sm rounded-0 select2" required>
 				<option value="" disabled <?= !isset($phase_id) ? "selected" : "" ?>></option>
 				<?php
-				$phase = $conn->query("SELECT * FROM `phase_list` where delete_flag = 0 and `status` = 1 " . (isset($phase_id) ? " or id = '{$phase_id}'" : "") . " order by `name` asc");
+				$phase = $conn->query("SELECT * FROM `program_list` where delete_flag = 0 and `status` = 1 " . (isset($phase_id) ? " or id = '{$phase_id}'" : "") . " order by `name` asc");
 				while ($row = $phase->fetch_assoc()) :
 				?>
 					<option value="<?= $row['id'] ?>" <?php echo isset($phase_id) && $phase_id == $row['id'] ? 'selected' : '' ?>><?= $row['name'] ?></option>

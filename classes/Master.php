@@ -87,7 +87,7 @@ class Master extends DBConnection
 			}
 		}
 
-		$check = $this->conn->query("SELECT * FROM `phase_list` where `name` = '{$name}' and delete_flag = 0 " . (!empty($id) ? " and id != {$id} " : "") . " ")->num_rows;
+		$check = $this->conn->query("SELECT * FROM `program_list` where `name` = '{$name}' and delete_flag = 0 " . (!empty($id) ? " and id != {$id} " : "") . " ")->num_rows;
 		if ($this->capture_err())
 			return $this->capture_err();
 		if ($check > 0) {
@@ -95,9 +95,9 @@ class Master extends DBConnection
 			$resp['msg'] = " Phase already exists.";
 		} else {
 			if (empty($id)) {
-				$sql = "INSERT INTO `phase_list` set {$data} ";
+				$sql = "INSERT INTO `program_list` set {$data} ";
 			} else {
-				$sql = "UPDATE `phase_list` set {$data} where id = '{$id}' ";
+				$sql = "UPDATE `program_list` set {$data} where id = '{$id}' ";
 			}
 			$save = $this->conn->query($sql);
 			if ($save) {
@@ -118,7 +118,7 @@ class Master extends DBConnection
 	function delete_phase()
 	{
 		extract($_POST);
-		$del = $this->conn->query("UPDATE `phase_list` set delete_flag = 1 where id = '{$id}'");
+		$del = $this->conn->query("UPDATE `program_list` set delete_flag = 1 where id = '{$id}'");
 		if ($del) {
 			$resp['status'] = 'success';
 			$this->settings->set_flashdata('success', " Phase successfully deleted.");

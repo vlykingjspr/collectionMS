@@ -33,7 +33,7 @@
 					<tbody>
 						<?php
 						$i = 1;
-						$qry = $conn->query("SELECT * from `phase_list` where delete_flag = 0 order by `name` asc ");
+						$qry = $conn->query("SELECT * from `program_list` where delete_flag = 0 order by `name` asc ");
 						while ($row = $qry->fetch_assoc()) :
 						?>
 							<tr>

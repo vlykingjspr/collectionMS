@@ -1,7 +1,7 @@
 <?php
 require_once('./../../config.php');
 if (isset($_GET['id']) && $_GET['id'] > 0) {
-	$qry = $conn->query("SELECT * from `phase_list` where id = '{$_GET['id']}' and delete_flag = 0 ");
+	$qry = $conn->query("SELECT * from `program_list` where id = '{$_GET['id']}' and delete_flag = 0 ");
 	if ($qry->num_rows > 0) {
 		foreach ($qry->fetch_assoc() as $k => $v) {
 			$$k = $v;
