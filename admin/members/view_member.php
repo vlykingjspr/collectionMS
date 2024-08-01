@@ -41,7 +41,7 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
                                 <dt class="text-muted">Program</dt>
                                 <dd class="pl-3"><b><?= isset($phase) ? format_num($phase) : 'N/A' ?></b></dd>
                                 <dt class="text-muted">Year Level</dt>
-                                <dd class="pl-3"><b><?= isset($block) ? format_num($block) : 'N/A' ?></b></dd>
+                                <dd class="pl-3"><b><?= isset($year) ? format_num($year) : 'N/A' ?></b></dd>
                                 <dt class="text-muted">Set</dt>
                                 <dd class="pl-3"><b><?= isset($set) ? format_num($set) : 'N/A' ?></b></dd>
                                 <dt class="text-muted">Status</dt>

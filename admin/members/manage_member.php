@@ -66,8 +66,8 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
 			</select>
 		</div>
 		<div class="form-group">
-			<label for="block" class="control-label">Year Level</label>
-			<input name="block" id="block" type="text" class="form-control form-control-sm rounded-0 text-right" value="<?php echo isset($block) ? $block : ''; ?>" required>
+			<label for="year" class="control-label">Year Level</label>
+			<input name="year" id="year" type="text" class="form-control form-control-sm rounded-0 text-right" value="<?php echo isset($year) ? $year : ''; ?>" required>
 		</div>
 
 		<div class="form-group">

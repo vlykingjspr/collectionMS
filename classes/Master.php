@@ -138,7 +138,7 @@ class Master extends DBConnection
 				$data .= " `{$k}`='{$this->conn->real_escape_string($v)}' ";
 			}
 		}
-		$check = $this->conn->query("SELECT * FROM `member_list` where phase_id = '{$phase_id}' and `block` = '{$block}' and `set` = '{$set}' and delete_flag = 0 " . (!empty($id) ? " and id != '{$id}'" : ""))->num_rows;
+		$check = $this->conn->query("SELECT * FROM `member_list` where phase_id = '{$phase_id}' and `year` = '{$year}' and `set` = '{$set}' and delete_flag = 0 " . (!empty($id) ? " and id != '{$id}'" : ""))->num_rows;
 
 		if (empty($id)) {
 			$sql = "INSERT INTO `member_list` set {$data} ";
