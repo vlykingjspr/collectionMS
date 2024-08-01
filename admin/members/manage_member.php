@@ -49,10 +49,10 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
 						?>>Female</option>
 			</select> -->
 		</div>
-		<div class="form-group">
+		<!-- <div class="form-group">
 			<label for="rfid" class="control-label">rfid #</label>
 			<input name="rfid" id="rfid" type="text" class="form-control form-control-sm rounded-0" value="<?php echo isset($rfid) ? $rfid : ''; ?>" required>
-		</div>
+		</div> -->
 		<div class="form-group">
 			<label for="phase_id" class="control-label">Phase</label>
 			<select name="phase_id" id="phase_id" class="form-control form-control-sm rounded-0 select2" required>
