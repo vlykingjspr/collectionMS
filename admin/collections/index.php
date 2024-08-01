@@ -37,7 +37,7 @@
 						$i = 1;
 						$phases = $conn->query("SELECT * FROM `program_list` where id in (SELECT phase_id FROM `member_list` where id in (SELECT member_id FROM collection_list))");
 						$phase_arr = array_column($phases->fetch_all(MYSQLI_ASSOC), 'name', 'id');
-						$qry = $conn->query("SELECT c.*,CONCAT(m.firstname, ' ', COALESCE(m.middlename,''), ' ', m.lastname) as fullname, m.phase_id,m.block,m.lot from `collection_list` c inner join member_list m on c.member_id = m.id order by date(c.date_collected) desc,(CONCAT(m.firstname, ' ', COALESCE(m.middlename,''), ' ', m.lastname)) asc ");
+						$qry = $conn->query("SELECT c.*,CONCAT(m.firstname, ' ', COALESCE(m.middlename,''), ' ', m.lastname) as fullname, m.phase_id,m.year,m.set from `collection_list` c inner join member_list m on c.member_id = m.id order by date(c.date_collected) desc,(CONCAT(m.firstname, ' ', COALESCE(m.middlename,''), ' ', m.lastname)) asc ");
 						while ($row = $qry->fetch_assoc()) :
 						?>
 							<tr class="printable" data-id="<?= $row['id'] ?>">
@@ -47,7 +47,7 @@
 								<td>
 									<div><?php echo ucwords($row['fullname']) ?></div>
 									<small class="text-muted"><?= ucwords((isset($phase_arr[$row['phase_id']]) ? $phase_arr[$row['phase_id']] : "N/A"))
-																// . ' Block ' . $row['block'] . ' Lot ' . $row['lot']) 
+																	. '-' . $row['year'] . ' ' . $row['set']
 																?></small>
 								</td>
 								<td class="text-right"><?php echo format_num($row['total_amount']) ?></td>
