@@ -50,7 +50,7 @@
       <span class="info-box-icon bg-gradient-light border elevation-1"><i class="fas fa-user-friends"></i></span>
 
       <div class="info-box-content">
-        <span class="info-box-text">Std</span>
+        <span class="info-box-text">Students</span>
         <span class="iinfo-box-number text-right h4">
           <?php
           $total = $conn->query("SELECT count(id) as total FROM member_list where delete_flag = 0 and status = 1 ")->fetch_assoc()['total'];

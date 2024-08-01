@@ -17,21 +17,20 @@
 					<colgroup>
 						<col width="5%">
 						<col width="15%">
-						<col width="15%">
+						<col width="30%">
 						<col width="20%">
 						<col width="10%">
-						<col width="15%">
 						<col width="15%">
 					</colgroup>
 					<thead>
 						<tr class="bg-gradient-secondary">
 							<th>#</th>
-							<th>Date Created</th>
+							<th>Student ID</th>
 							<th>Name</th>
 							<th>Set</th>
-							<th>Contact #</th>
 							<th>Status</th>
 							<th>Action</th>
+
 						</tr>
 					</thead>
 					<tbody>
@@ -44,13 +43,12 @@
 						?>
 							<tr>
 								<td class="text-center"><?php echo $i++; ?></td>
-								<td><?php echo date("Y-m-d H:i", strtotime($row['date_created'])) ?></td>
+								<td><?php echo $row['gender'] ?></td>
 								<td><?php echo ucwords($row['fullname']) ?></td>
 								<td><?= ucwords((isset($phase_arr[$row['phase_id']]) ? $phase_arr[$row['phase_id']] : "N/A"))
 
-									// . ' Block ' . $row['block'] . ' Lot ' . $row['lot']) 
+										. '  ' . $row['block'] . '  ' . $row['lot']
 									?></td>
-								<td class="text-right"><?php echo $row['contact'] ?></td>
 								<td class="text-center">
 									<?php if ($row['status'] == 1) : ?>
 										<span class="badge badge-success bg-gradient-success rounded-pill px-3">Active</span>
@@ -58,6 +56,7 @@
 										<span class="badge badge-danger bg-gradient-danger rounded-pill px-3">Inactive</span>
 									<?php endif; ?>
 								</td>
+
 								<td align="center">
 									<button type="button" class="btn btn-flat btn-default btn-sm dropdown-toggle dropdown-icon" data-toggle="dropdown">
 										Action
@@ -71,6 +70,7 @@
 										<a class="dropdown-item delete_data" href="javascript:void(0)" data-id="<?php echo $row['id'] ?>"><span class="fa fa-trash text-danger"></span> Delete</a>
 									</div>
 								</td>
+
 							</tr>
 						<?php endwhile; ?>
 					</tbody>
