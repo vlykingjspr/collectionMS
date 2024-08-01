@@ -1,34 +1,40 @@
 <?php
 require_once('./../../config.php');
-if(isset($_GET['id']) && $_GET['id'] > 0){
-    $qry = $conn->query("SELECT c.*,CONCAT(m.lastname,', ', m.firstname,' ',COALESCE(m.middlename,'')) as fullname from `collection_list` c inner join member_list m on c.member_id = m.id where c.id = '{$_GET['id']}' ");
-    if($qry->num_rows > 0){
-        foreach($qry->fetch_assoc() as $k => $v){
-            $$k=$v;
-        }
-    }else{
+if (isset($_GET['id']) && $_GET['id'] > 0) {
+	$qry = $conn->query("SELECT c.*,CONCAT(m.lastname,', ', m.firstname,' ',COALESCE(m.middlename,'')) as fullname from `collection_list` c inner join member_list m on c.member_id = m.id where c.id = '{$_GET['id']}' ");
+	if ($qry->num_rows > 0) {
+		foreach ($qry->fetch_assoc() as $k => $v) {
+			$$k = $v;
+		}
+	} else {
 ?>
 		<center>Unknown collection</center>
 		<style>
-			#uni_modal .modal-footer{
-				display:none
+			#uni_modal .modal-footer {
+				display: none
 			}
 		</style>
 		<div class="text-right">
 			<button class="btn btndefault bg-gradient-dark btn-flat" data-dismiss="modal"><i class="fa fa-times"></i> Close</button>
 		</div>
-		<?php
+<?php
 		exit;
-		}
+	}
 }
 ?>
 <style>
-	#uni_modal .modal-footer{
-		display:none
+	#uni_modal .modal-footer {
+		display: none
 	}
 </style>
 <div class="container-fluid">
-	<div class="row">
+	<div class="text-right">
+		<button class="btn btn-primary bg-gradient-primary btn-sm btn-flat no-print mb-2" style="border: none;" type="button" id="print_receipt"><i class="fa fa-print"></i> Print</button>
+	</div>
+
+
+	<div class="row prints">
+
 		<div class="col-md-6">
 			<dl>
 				<dt class="text-muted">Ref. Code</dt>
@@ -37,7 +43,7 @@ if(isset($_GET['id']) && $_GET['id'] > 0){
 				<dd class="pl-3"><?= isset($date_collected) ? date("D F d, Y", strtotime($date_collected)) : "" ?></dd>
 				<dt class="text-muted">Collected By</dt>
 				<dd class="pl-3"><?= isset($collected_by) ? ($collected_by) : "" ?></dd>
-				<dt class="text-muted">Member</dt>
+				<dt class="text-muted">Student Name</dt>
 				<dd class="pl-3"><?= isset($fullname) ? ($fullname) : "" ?></dd>
 			</dl>
 		</div>
@@ -50,14 +56,14 @@ if(isset($_GET['id']) && $_GET['id'] > 0){
 					</tr>
 				</thead>
 				<tbody>
-					<?php 
+					<?php
 					$collection = $conn->query("SELECT i.*,c.name as `category` FROM `collection_items` i inner join category_list c on i.category_id = c.id where i.collection_id = '{$id}' ");
-					while($row = $collection->fetch_assoc()):
+					while ($row = $collection->fetch_assoc()) :
 					?>
-					<tr>
-						<td class="px-2 py-1 align-middle"><?= $row['category'] ?></td>
-						<td class="px-2 py-1 align-middle text-right"><?= format_num($row['fee']) ?></td>
-					</tr>
+						<tr>
+							<td class="px-2 py-1 align-middle"><?= $row['category'] ?></td>
+							<td class="px-2 py-1 align-middle text-right"><?= format_num($row['fee']) ?></td>
+						</tr>
 					<?php endwhile; ?>
 				</tbody>
 				<tfoot>
@@ -70,7 +76,85 @@ if(isset($_GET['id']) && $_GET['id'] > 0){
 		</div>
 	</div>
 	<div class="clear-fix mb-3"></div>
+
 	<div class="text-right">
-		<button class="btn btn-default bg-gradient-dark btn-sm btn-flat" type="button" data-dismiss="modal"><i class="fa f-times"></i> Close</button>
+
+		<button class="btn btn-default bg-gradient-dark btn-sm btn-flat no-print" type="button" data-dismiss="modal"><i class="fa f-times"></i> Close</button>
+
 	</div>
 </div>
+<noscript id="print-header">
+	<style>
+		#sys_logo {
+			width: 5em !important;
+			height: 5em !important;
+			object-fit: scale-down !important;
+			object-position: center center !important;
+		}
+	</style>
+	<div class="d-flex align-items-center">
+		<div class="col-auto text-center pl-4">
+			<img src="<?= validate_image($_settings->info('logo')) ?>" alt=" System Logo" id="sys_logo" class="img-circle border border-dark">
+		</div>
+		<div class="col-auto flex-shrink-1 flex-grow-1 px-4">
+			<h4 class="text-center m-0"><?= $_settings->info('name') ?></h4>
+			<h3 class="text-center m-0"><b>Collection Reciept</b></h3>
+
+
+		</div>
+	</div>
+	<hr>
+</noscript>
+<script>
+	$(document).ready(function() {
+		$('#print_receipt').click(function() {
+			var head = $('head').clone();
+
+			head.append(`
+                <style>
+					@media print{
+						.no-print{
+							display:none;
+						}
+						.prints{
+							width:100%;
+							max-width:100%;
+						}
+						.prints .col-md-6{
+							width:50%;
+							float:left;
+						}
+						.prints .col-md-6 table{
+							width:100%;
+						}
+						.prints .col-md-6 table th,
+						.prints .col-md-6 table td{
+							border:1px solid;
+						}
+						.prints .col-md-6 table th{
+							background: #f1f1f1;
+						}
+					}
+                </style>
+            `);
+
+			var modalContent = $('#uni_modal .container-fluid').clone();
+			var el = $('<div>');
+			var header = $($('noscript#print-header').html()).clone();
+			el.append(head);
+			el.append(header);
+			el.append(modalContent);
+
+			var nw = window.open("", "_blank", "width=1000,height=900,top=50,left=75");
+			nw.document.write(el.html());
+			nw.document.close();
+
+			setTimeout(() => {
+				nw.print();
+				setTimeout(() => {
+					nw.close();
+				}, 200);
+			}, 500);
+		});
+	});
+</script>

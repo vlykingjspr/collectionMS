@@ -14,7 +14,7 @@
       <span class="info-box-icon bg-gradient-primary elevation-1"><i class="fas fa-th-list"></i></span>
 
       <div class="info-box-content">
-        <span class="info-box-text">Total Categories </span>
+        <span class="info-box-text">Total Collections </span>
         <span class="iinfo-box-number text-right h4">
           <?php
           $total = $conn->query("SELECT count(id) as total FROM category_list where delete_flag = 0 ")->fetch_assoc()['total'];
@@ -27,7 +27,7 @@
     </div>
     <!-- /.info-box -->
   </div>
-  <div class="col-12 col-sm-6 col-md-6">
+  <!-- <div class="col-12 col-sm-6 col-md-6">
     <div class="info-box">
       <span class="info-box-icon bg-gradient-secondary elevation-1"><i class="fas fa-table"></i></span>
 
@@ -35,22 +35,22 @@
         <span class="info-box-text">Total Phases</span>
         <span class="iinfo-box-number text-right h4">
           <?php
-          $total = $conn->query("SELECT count(id) as total FROM phase_list where delete_flag = 0 ")->fetch_assoc()['total'];
-          echo format_num($total);
+          //$total = $conn->query("SELECT count(id) as total FROM phase_list where delete_flag = 0 ")->fetch_assoc()['total'];
+          //echo format_num($total);
           ?>
           <?php ?>
         </span>
       </div>
       <!-- /.info-box-content -->
-    </div>
-    <!-- /.info-box -->
-  </div>
+  <!-- </div> -->
+  <!-- /.info-box -->
+  <!-- </div> -->
   <div class="col-12 col-sm-6 col-md-6">
     <div class="info-box">
       <span class="info-box-icon bg-gradient-light border elevation-1"><i class="fas fa-user-friends"></i></span>
 
       <div class="info-box-content">
-        <span class="info-box-text">Active Members</span>
+        <span class="info-box-text">Std</span>
         <span class="iinfo-box-number text-right h4">
           <?php
           $total = $conn->query("SELECT count(id) as total FROM member_list where delete_flag = 0 and status = 1 ")->fetch_assoc()['total'];

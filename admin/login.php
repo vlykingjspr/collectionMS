@@ -11,9 +11,8 @@
     body {
       width: calc(100%);
       height: calc(100%);
-      background-image: url('<?= validate_image($_settings->info('cover')) ?>');
-      background-repeat: no-repeat;
-      background-size: cover;
+      background: rgb(88, 81, 187);
+      background: linear-gradient(133deg, rgba(88, 81, 187, 1) 0%, rgba(120, 24, 171, 1) 47%, rgba(98, 73, 190, 1) 100%);
     }
 
     #logo-img {
@@ -36,10 +35,10 @@
     <!-- /.login-logo -->
     <div class="card card-outline card-primary">
       <div class="card-header text-center">
-        <a href="./" class="h1"><b>Logins</b></a>
+        <a href="./" class="h1"><b>Login</b></a>
       </div>
       <div class="card-body">
-        <p class="login-box-msg">Sign in to start your session </p>
+
 
         <form id="login-frm" action="" method="post">
           <div class="input-group mb-3">
