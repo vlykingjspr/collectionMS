@@ -54,7 +54,7 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
 			<input name="rfid" id="rfid" type="text" class="form-control form-control-sm rounded-0" value="<?php echo isset($rfid) ? $rfid : ''; ?>" required>
 		</div> -->
 		<div class="form-group">
-			<label for="phase_id" class="control-label">Phase</label>
+			<label for="phase_id" class="control-label">Program</label>
 			<select name="phase_id" id="phase_id" class="form-control form-control-sm rounded-0 select2" required>
 				<option value="" disabled <?= !isset($phase_id) ? "selected" : "" ?>></option>
 				<?php
@@ -66,12 +66,12 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
 			</select>
 		</div>
 		<div class="form-group">
-			<label for="block" class="control-label">Block #</label>
+			<label for="block" class="control-label">Year Level</label>
 			<input name="block" id="block" type="text" class="form-control form-control-sm rounded-0 text-right" value="<?php echo isset($block) ? $block : ''; ?>" required>
 		</div>
 
 		<div class="form-group">
-			<label for="lot" class="control-label">Lot #</label>
+			<label for="lot" class="control-label">Set</label>
 			<input name="lot" id="lot" type="text" class="form-control form-control-sm rounded-0 text-right" value="<?php echo isset($lot) ? $lot : ''; ?>" required>
 		</div>
 		<div class="form-group">
