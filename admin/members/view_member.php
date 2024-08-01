@@ -34,8 +34,8 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
                             <dl>
                                 <dt class="text-muted">Fullname</dt>
                                 <dd class="pl-3"><b><?= isset($fullname) ? ucwords($fullname) : 'N/A' ?></b></dd>
-                                <dt class="text-muted">Gender</dt>
-                                <dd class="pl-3"><b><?= isset($gender) ? $gender : 'N/A' ?></b></dd>
+                                <dt class="text-muted">School ID </dt>
+                                <dd class="pl-3"><b><?= isset($school_id) ? $school_id : 'N/A' ?></b></dd>
                                 <dt class="text-muted">Contact #</dt>
                                 <dd class="pl-3"><small><?= isset($contact) ? $contact : 'N/A' ?></small></dd>
                                 <dt class="text-muted">Phase</dt>

@@ -43,7 +43,7 @@
 						?>
 							<tr>
 								<td class="text-center"><?php echo $i++; ?></td>
-								<td><?php echo $row['gender'] ?></td>
+								<td><?php echo $row['school_id'] ?></td>
 								<td><?php echo ucwords($row['fullname']) ?></td>
 								<td><?= ucwords((isset($phase_arr[$row['phase_id']]) ? $phase_arr[$row['phase_id']] : "N/A"))
 

@@ -139,33 +139,30 @@ class Master extends DBConnection
 			}
 		}
 		$check = $this->conn->query("SELECT * FROM `member_list` where phase_id = '{$phase_id}' and `block` = '{$block}' and `lot` = '{$lot}' and delete_flag = 0 " . (!empty($id) ? " and id != '{$id}'" : ""))->num_rows;
-		if ($check > 0) {
-			$resp['status'] = 'failed';
-			$resp['msg'] = ' Phase Block/Lot Already exists.';
+
+		if (empty($id)) {
+			$sql = "INSERT INTO `member_list` set {$data} ";
 		} else {
-			if (empty($id)) {
-				$sql = "INSERT INTO `member_list` set {$data} ";
-			} else {
-				$sql = "UPDATE `member_list` set {$data} where id = '{$id}' ";
-			}
-			$save = $this->conn->query($sql);
-			if ($save) {
-				$eid = empty($id) ? $this->conn->insert_id : $id;
-				$resp['eid'] = $eid;
-				$resp['status'] = 'success';
-				if (empty($id))
-					$resp['msg'] = " New Member successfully saved.";
-				else
-					$resp['msg'] = " Member successfully updated.";
-			} else {
-				$resp['status'] = 'failed';
-				if (empty($id))
-					$resp['msg'] = " Member has failed to save.";
-				else
-					$resp['msg'] = " Member has failed to update.";
-				$resp['err'] = $this->conn->error . "[{$sql}]";
-			}
+			$sql = "UPDATE `member_list` set {$data} where id = '{$id}' ";
 		}
+		$save = $this->conn->query($sql);
+		if ($save) {
+			$eid = empty($id) ? $this->conn->insert_id : $id;
+			$resp['eid'] = $eid;
+			$resp['status'] = 'success';
+			if (empty($id))
+				$resp['msg'] = " New Member successfully saved.";
+			else
+				$resp['msg'] = " Member successfully updated.";
+		} else {
+			$resp['status'] = 'failed';
+			if (empty($id))
+				$resp['msg'] = " Member has failed to save.";
+			else
+				$resp['msg'] = " Member has failed to update.";
+			$resp['err'] = $this->conn->error . "[{$sql}]";
+		}
+
 
 		if ($resp['status'] == 'success')
 			$this->settings->set_flashdata('success', $resp['msg']);

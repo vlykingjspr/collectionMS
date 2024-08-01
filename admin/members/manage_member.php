@@ -39,11 +39,15 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
 			<input name="lastname" id="lastname" type="text" class="form-control form-control-sm rounded-0" value="<?php echo isset($lastname) ? $lastname : ''; ?>" required>
 		</div>
 		<div class="form-group">
-			<label for="gender" class="control-label">Gender</label>
-			<select name="gender" id="gender" class="custom-select selevt" required>
-				<option <?php echo isset($gender) && $gender == "Male" ? 'selected' : '' ?>>Male</option>
-				<option <?php echo isset($gender) && $gender == "Female" ? 'selected' : '' ?>>Female</option>
-			</select>
+			<label for="school_id" class="control-label">School ID</label>
+			<input name="school_id" id="school_id" type="text" class="form-control form-control-sm rounded-0" value="<?php echo isset($school_id) ? $school_id : ''; ?>" required>
+
+			<!-- <select name="school_id" id="school_id" class="custom-select selevt" required>
+				<option <?php //echo isset($school_id) && $school_id == "Male" ? 'selected' : '' 
+						?>>Male</option>
+				<option <?php //echo isset($school_id) && $school_id == "Female" ? 'selected' : '' 
+						?>>Female</option>
+			</select> -->
 		</div>
 		<div class="form-group">
 			<label for="contact" class="control-label">Contact #</label>
