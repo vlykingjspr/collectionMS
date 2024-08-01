@@ -82,13 +82,13 @@
 <script>
 	$(document).ready(function() {
 		$('#create_new').click(function() {
-			uni_modal('Add New Member', "members/manage_member.php")
+			uni_modal('Add New Student', "members/manage_member.php")
 		})
 		$('.edit_data').click(function() {
-			uni_modal('Update Member Details', "members/manage_member.php?id=" + $(this).attr('data-id'))
+			uni_modal('Update Student Details', "members/manage_member.php?id=" + $(this).attr('data-id'))
 		})
 		$('.delete_data').click(function() {
-			_conf("Are you sure to delete this Member permanently?", "delete_member", [$(this).attr('data-id')])
+			_conf("Are you sure to delete this student permanently?", "delete_member", [$(this).attr('data-id')])
 		})
 		$('table th, table td').addClass('align-middle px-2 py-1')
 		$('.table').dataTable();

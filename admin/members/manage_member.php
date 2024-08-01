@@ -67,12 +67,12 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
 		</div>
 		<div class="form-group">
 			<label for="year" class="control-label">Year Level</label>
-			<input name="year" id="year" type="text" class="form-control form-control-sm rounded-0 text-right" value="<?php echo isset($year) ? $year : ''; ?>" required>
+			<input name="year" id="year" type="text" class="form-control form-control-sm rounded-0 text-left" value="<?php echo isset($year) ? $year : ''; ?>" required>
 		</div>
 
 		<div class="form-group">
 			<label for="set" class="control-label">Set</label>
-			<input name="set" id="set" type="text" class="form-control form-control-sm rounded-0 text-right" value="<?php echo isset($set) ? $set : ''; ?>" required>
+			<input name="set" id="set" type="text" class="form-control form-control-sm rounded-0 text-left" value="<?php echo isset($set) ? $set : ''; ?>" required>
 		</div>
 		<div class="form-group">
 			<label for="status" class="control-label">Status</label>

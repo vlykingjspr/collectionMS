@@ -19,7 +19,7 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
 <div class="content py-3">
     <div class="card card-outline card-primary rounded-0 shadow">
         <div class="card-header">
-            <h5 class="card-title">Member Detais</h5>
+            <h5 class="card-title">Student Detais</h5>
             <div class="card-tools">
                 <button class="btn btn-flat btn-sm btn-primary" id="edit_data"><i class="fa fa-edit"></i> Edit</button>
                 <button class="btn btn-flat btn-sm btn-danger" id="delete_data"><i class="fa fa-trash"></i> Delete</button>
@@ -39,11 +39,11 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
                                 <dt class="text-muted">Rfid </dt>
                                 <dd class="pl-3"><small><?= isset($rfid) ? $rfid : 'N/A' ?></small></dd>
                                 <dt class="text-muted">Program</dt>
-                                <dd class="pl-3"><b><?= isset($phase) ? format_num($phase) : 'N/A' ?></b></dd>
+                                <dd class="pl-3"><b><?= isset($phase) ? $phase : 'N/A' ?></b></dd>
                                 <dt class="text-muted">Year Level</dt>
-                                <dd class="pl-3"><b><?= isset($year) ? format_num($year) : 'N/A' ?></b></dd>
+                                <dd class="pl-3"><b><?= isset($year) ? $year : 'N/A' ?></b></dd>
                                 <dt class="text-muted">Set</dt>
-                                <dd class="pl-3"><b><?= isset($set) ? format_num($set) : 'N/A' ?></b></dd>
+                                <dd class="pl-3"><b><?= isset($set) ? $set : 'N/A' ?></b></dd>
                                 <dt class="text-muted">Status</dt>
                                 <dd class="pl-3">
                                     <?php if ($status == 1) : ?>
@@ -110,7 +110,7 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
 <script>
     $(function() {
         $('#edit_data').click(function() {
-            uni_modal('Update Member Details - <b><?= isset($code) ? $code : "" ?></b>', "members/manage_member.php?id=<?= isset($id) ? $id : '' ?>", 'mid-large')
+            uni_modal('Update Student Details - <b><?= isset($code) ? $code : "" ?></b>', "members/manage_member.php?id=<?= isset($id) ? $id : '' ?>", 'mid-large')
         })
         $('#delete_data').click(function() {
             _conf("Are you sure to delete <b><?= isset($code) ? $code : "" ?></b> Member permanently?", "delete_member", ['<?= isset($id) ? $id : '' ?>'])
