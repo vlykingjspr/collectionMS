@@ -40,7 +40,7 @@
                                     <th class="text-center align-middle py-1">Date Created</th>
                                     <th class="text-center align-middle py-1">Date Collected</th>
                                     <th class="text-center align-middle py-1">Collected By</th>
-                                    <th class="text-center align-middle py-1">Member</th>
+                                    <th class="text-center align-middle py-1">Student</th>
                                     <th class="text-center align-middle py-1">Amount</th>
                                 </tr>
                             </thead>
