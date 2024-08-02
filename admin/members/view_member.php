@@ -37,7 +37,7 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
                                 <dt class="text-muted">School ID </dt>
                                 <dd class="pl-3"><b><?= isset($school_id) ? $school_id : 'N/A' ?></b></dd>
                                 <dt class="text-muted">Rfid </dt>
-                                <dd class="pl-3"><small><?= isset($rfid) ? $rfid : 'N/A' ?></small></dd>
+                                <dd class="pl-3"><b><?= isset($rfid) ? $rfid : 'N/A' ?></b></dd>
                                 <dt class="text-muted">Program</dt>
                                 <dd class="pl-3"><b><?= isset($phase) ? $phase : 'N/A' ?></b></dd>
                                 <dt class="text-muted">Year Level</dt>
