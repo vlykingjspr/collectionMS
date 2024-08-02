@@ -1,6 +1,6 @@
 <?php
 if (isset($_GET['id']) && $_GET['id'] > 0) {
-    $qry = $conn->query("SELECT m.*,p.name as `phase`,CONCAT(m.firstname, ' ', COALESCE(m.middlename,''), m.lastname) as fullname from `student_list` m inner join program_list p on m.phase_id = p.id where m.id = '{$_GET['id']}' and m.delete_flag = 0 ");
+    $qry = $conn->query("SELECT m.*,p.name as `phase`,CONCAT(m.firstname, ' ', COALESCE(m.middlename,''), m.lastname) as fullname from `student_list` m inner join program_list p on m.program_id = p.id where m.id = '{$_GET['id']}' and m.delete_flag = 0 ");
     if ($qry->num_rows > 0) {
         foreach ($qry->fetch_assoc() as $k => $v) {
             $$k = $v;

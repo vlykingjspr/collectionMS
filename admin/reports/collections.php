@@ -48,9 +48,9 @@
                                 <?php
                                 $i = 1;
                                 $total = 0;
-                                $phases = $conn->query("SELECT * FROM `program_list` where id in (SELECT phase_id FROM `student_list` where id in (SELECT member_id FROM collection_list where  date_format(date_collected,'%Y-%m') = '{$month}'))");
+                                $phases = $conn->query("SELECT * FROM `program_list` where id in (SELECT program_id FROM `student_list` where id in (SELECT member_id FROM collection_list where  date_format(date_collected,'%Y-%m') = '{$month}'))");
                                 $phase_arr = array_column($phases->fetch_all(MYSQLI_ASSOC), 'name', 'id');
-                                $qry = $conn->query("SELECT c.*,CONCAT(m.firstname, ' ', COALESCE(m.middlename,''), ' ', m.lastname) as fullname, m.phase_id,m.year,m.set from `collection_list` c inner join student_list m on c.member_id = m.id where date_format(c.date_collected,'%Y-%m') = '{$month}' order by date(c.date_collected) desc,(CONCAT(m.firstname, ' ', COALESCE(m.middlename,''), ' ', m.lastname)) asc ");
+                                $qry = $conn->query("SELECT c.*,CONCAT(m.firstname, ' ', COALESCE(m.middlename,''), ' ', m.lastname) as fullname, m.program_id,m.year,m.set from `collection_list` c inner join student_list m on c.member_id = m.id where date_format(c.date_collected,'%Y-%m') = '{$month}' order by date(c.date_collected) desc,(CONCAT(m.firstname, ' ', COALESCE(m.middlename,''), ' ', m.lastname)) asc ");
                                 while ($row = $qry->fetch_assoc()) :
                                     $total += $row['total_amount'];
                                 ?>
@@ -61,7 +61,7 @@
                                         <td class="align-middle px-2 py-1"><?php echo ucwords($row['collected_by']) ?></td>
                                         <td class="align-middle px-2 py-1">
                                             <div><?php echo ucwords($row['fullname']) ?></div>
-                                            <small class="text-muted"><?= ucwords((isset($phase_arr[$row['phase_id']]) ? $phase_arr[$row['phase_id']] : "N/A"))
+                                            <small class="text-muted"><?= ucwords((isset($phase_arr[$row['program_id']]) ? $phase_arr[$row['program_id']] : "N/A"))
                                                                             . '- ' . $row['year'] . '' . $row['set']
                                                                         ?></small>
                                         </td>

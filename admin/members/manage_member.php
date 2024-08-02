@@ -54,14 +54,14 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
 			<input name="rfid" id="rfid" type="text" class="form-control form-control-sm rounded-0" value="<?php echo isset($rfid) ? $rfid : ''; ?>" required>
 		</div> -->
 		<div class="form-group">
-			<label for="phase_id" class="control-label">Program</label>
-			<select name="phase_id" id="phase_id" class="form-control form-control-sm rounded-0 select2" required>
-				<option value="" disabled <?= !isset($phase_id) ? "selected" : "" ?>></option>
+			<label for="program_id" class="control-label">Program</label>
+			<select name="program_id" id="program_id" class="form-control form-control-sm rounded-0 select2" required>
+				<option value="" disabled <?= !isset($program_id) ? "selected" : "" ?>></option>
 				<?php
-				$phase = $conn->query("SELECT * FROM `program_list` where delete_flag = 0 and `status` = 1 " . (isset($phase_id) ? " or id = '{$phase_id}'" : "") . " order by `name` asc");
+				$phase = $conn->query("SELECT * FROM `program_list` where delete_flag = 0 and `status` = 1 " . (isset($program_id) ? " or id = '{$program_id}'" : "") . " order by `name` asc");
 				while ($row = $phase->fetch_assoc()) :
 				?>
-					<option value="<?= $row['id'] ?>" <?php echo isset($phase_id) && $phase_id == $row['id'] ? 'selected' : '' ?>><?= $row['name'] ?></option>
+					<option value="<?= $row['id'] ?>" <?php echo isset($program_id) && $program_id == $row['id'] ? 'selected' : '' ?>><?= $row['name'] ?></option>
 				<?php endwhile; ?>
 			</select>
 		</div>

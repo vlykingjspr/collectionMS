@@ -36,7 +36,7 @@
 					<tbody>
 						<?php
 						$i = 1;
-						$phases = $conn->query("SELECT * FROM `program_list` where id in (SELECT phase_id FROM `student_list` where delete_flag = 0)");
+						$phases = $conn->query("SELECT * FROM `program_list` where id in (SELECT program_id FROM `student_list` where delete_flag = 0)");
 						$phase_arr = array_column($phases->fetch_all(MYSQLI_ASSOC), 'name', 'id');
 						$qry = $conn->query("SELECT *,CONCAT(firstname, ' ', COALESCE(middlename,''), ' ', lastname) as fullname from `student_list` where delete_flag = 0 order by (CONCAT(firstname, ' ', COALESCE(middlename,''), ' ', lastname)) asc ");
 						while ($row = $qry->fetch_assoc()) :
@@ -45,7 +45,7 @@
 								<td class="text-center"><?php echo $i++; ?></td>
 								<td><?php echo $row['school_id'] ?></td>
 								<td><?php echo ucwords($row['fullname']) ?></td>
-								<td><?= ucwords((isset($phase_arr[$row['phase_id']]) ? $phase_arr[$row['phase_id']] : "N/A"))
+								<td><?= ucwords((isset($phase_arr[$row['program_id']]) ? $phase_arr[$row['program_id']] : "N/A"))
 
 										. '-' . $row['year'] . ' ' . $row['set']
 									?></td>

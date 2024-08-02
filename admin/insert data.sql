@@ -1,4 +1,4 @@
-INSERT INTO `student_list`(`id`, `rfid`, `school_id`, `firstname`, `lastname`, `middlename`,`date_updated`,`phase_id`,`year`,  `set`,`delete_flag`) VALUES (105, '0002969581', '2021-01658', 'SHERIZA LAINE PATRICIA', 'ROBEDILLO', ' V', '', 1, 3, 'A', ''),
+INSERT INTO `student_list`(`id`, `rfid`, `school_id`, `firstname`, `lastname`, `middlename`,`date_updated`,`program_id`,`year`,  `set`,`delete_flag`) VALUES (105, '0002969581', '2021-01658', 'SHERIZA LAINE PATRICIA', 'ROBEDILLO', ' V', '', 1, 3, 'A', ''),
 (5, '0001820617', '', 'JOHN NIEL', 'BALIGUAT', 'A', '', 2, 4, 'A', ''),
 (15, '0010790393', '', 'Jovito', 'Bolacoy', 'P', '', 2, 1, 'A', ''),
 (17, '0001710917', '', 'ERVIN DAVE', 'JUMAMOY', 'S', '', 1, 2, 'F', ''),
