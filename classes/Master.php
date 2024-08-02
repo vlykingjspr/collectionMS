@@ -138,12 +138,12 @@ class Master extends DBConnection
 				$data .= " `{$k}`='{$this->conn->real_escape_string($v)}' ";
 			}
 		}
-		$check = $this->conn->query("SELECT * FROM `member_list` where phase_id = '{$phase_id}' and `year` = '{$year}' and `set` = '{$set}' and delete_flag = 0 " . (!empty($id) ? " and id != '{$id}'" : ""))->num_rows;
+		$check = $this->conn->query("SELECT * FROM `student_list` where phase_id = '{$phase_id}' and `year` = '{$year}' and `set` = '{$set}' and delete_flag = 0 " . (!empty($id) ? " and id != '{$id}'" : ""))->num_rows;
 
 		if (empty($id)) {
-			$sql = "INSERT INTO `member_list` set {$data} ";
+			$sql = "INSERT INTO `student_list` set {$data} ";
 		} else {
-			$sql = "UPDATE `member_list` set {$data} where id = '{$id}' ";
+			$sql = "UPDATE `student_list` set {$data} where id = '{$id}' ";
 		}
 		$save = $this->conn->query($sql);
 		if ($save) {
@@ -151,15 +151,15 @@ class Master extends DBConnection
 			$resp['eid'] = $eid;
 			$resp['status'] = 'success';
 			if (empty($id))
-				$resp['msg'] = " New Member successfully saved.";
+				$resp['msg'] = " New Student successfully saved.";
 			else
-				$resp['msg'] = " Member successfully updated.";
+				$resp['msg'] = " Student successfully updated.";
 		} else {
 			$resp['status'] = 'failed';
 			if (empty($id))
-				$resp['msg'] = " Member has failed to save.";
+				$resp['msg'] = " Student has failed to save.";
 			else
-				$resp['msg'] = " Member has failed to update.";
+				$resp['msg'] = " Student has failed to update.";
 			$resp['err'] = $this->conn->error . "[{$sql}]";
 		}
 
@@ -171,10 +171,10 @@ class Master extends DBConnection
 	function delete_member()
 	{
 		extract($_POST);
-		$del = $this->conn->query("UPDATE `member_list` set `delete_flag` = 1 where id = '{$id}'");
+		$del = $this->conn->query("UPDATE `student_list` set `delete_flag` = 1 where id = '{$id}'");
 		if ($del) {
 			$resp['status'] = 'success';
-			$this->settings->set_flashdata('success', " Member successfully deleted.");
+			$this->settings->set_flashdata('success', " Student successfully deleted.");
 		} else {
 			$resp['status'] = 'failed';
 			$resp['error'] = $this->conn->error;

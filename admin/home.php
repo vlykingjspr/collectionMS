@@ -53,7 +53,7 @@
         <span class="info-box-text">Students</span>
         <span class="iinfo-box-number text-right h4">
           <?php
-          $total = $conn->query("SELECT count(id) as total FROM member_list where delete_flag = 0 and status = 1 ")->fetch_assoc()['total'];
+          $total = $conn->query("SELECT count(id) as total FROM student_list where delete_flag = 0 and status = 1 ")->fetch_assoc()['total'];
           echo format_num($total);
           ?>
           <?php ?>
