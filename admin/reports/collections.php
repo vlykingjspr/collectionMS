@@ -98,7 +98,7 @@
         <div class="col-auto flex-shrink-1 flex-grow-1 px-4">
             <h4 class="text-center m-0"><?= $_settings->info('name') ?></h4>
             <h3 class="text-center m-0"><b>Collection Report</b></h3>
-            <h5 class="text-center m-0">For the Month of</h5>
+            <h5 class="text-center m-0">For the Month of sad</h5>
             <h5 class="text-center m-0"><?= date("F Y", strtotime($month)) ?></h5>
         </div>
     </div>

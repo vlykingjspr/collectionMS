@@ -1,41 +1,48 @@
 <?php
 require_once('./../../config.php');
-if (isset($_GET['id']) && $_GET['id'] > 0) {
-    $qry = $conn->query("SELECT * from `collection_list` where id = '{$_GET['id']}'");
-    if ($qry->num_rows > 0) {
-        foreach ($qry->fetch_assoc() as $k => $v) {
-            $$k = $v;
-        }
-    } else {
-?>
-        <center>Unknown Collection ID</center>
-        <style>
-            #uni_modal .modal-footer {
-                display: none
-            }
-        </style>
-        <div class="text-right">
-            <button class="btn btndefault bg-gradient-dark btn-flat" data-dismiss="modal"><i class="fa fa-times"></i> Close</button>
-        </div>
-<?php
-        exit;
-    }
-}
-?>
 
+$member_id = isset($_GET['mid']) ? $_GET['mid'] : null;
+$collected_categories = [];
+
+if ($member_id) {
+    // Query to find all collected categories for the selected member
+    $collected_qry = $conn->query("
+        SELECT ci.category_id 
+        FROM collection_items ci 
+        INNER JOIN collection_list cl ON ci.collection_id = cl.id 
+        WHERE cl.member_id = '{$member_id}'
+    ");
+
+    // Debugging: Check what category IDs are being retrieved
+    while ($row = $collected_qry->fetch_assoc()) {
+        $collected_categories[] = $row['category_id'];
+    }
+
+    // Debugging output
+    // Uncomment the following line to see the collected categories
+
+    echo ("." . print_r($collected_categories));
+}
+$category = $conn->query("
+    SELECT * 
+    FROM `category_list` 
+    WHERE delete_flag = 0 AND `status` = 1 
+    ORDER BY `name` ASC
+");
+?>
+<style>
+    .disabled-text {
+        color: #ccc;
+        /* Light grey color to indicate disabled state */
+        pointer-events: none;
+        /* Disable text selection */
+    }
+</style>
 <div class="container-fluid">
     <form action="" id="collection-form">
         <input type="hidden" name="id" value="<?php echo isset($id) ? $id : '' ?>">
         <div class="row">
             <div class="col-md-6">
-                <div class="form-group">
-                    <label for="date_collected" class="control-label">Date Collected</label>
-                    <input name="date_collected" id="date_collected" type="date" class="form-control form-control-sm rounded-0" value="<?php echo isset($date_collected) ? $date_collected : ''; ?>" required>
-                </div>
-                <div class="form-group">
-                    <label for="collected_by" class="control-label">Collected By</label>
-                    <input name="collected_by" id="collected_by" type="text" class="form-control form-control-sm rounded-0" value="<?php echo isset($collected_by) ? $collected_by : ''; ?>" required>
-                </div>
                 <?php if (isset($_GET['mid'])) : ?>
                     <input type="hidden" name="member_id" value="<?= $_GET['mid'] ?>">
                 <?php else : ?>
@@ -52,6 +59,15 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
                         </select>
                     </div>
                 <?php endif; ?>
+                <div class="form-group">
+                    <label for="date_collected" class="control-label">Date Collected</label>
+                    <input name="date_collected" id="date_collected" type="date" class="form-control form-control-sm rounded-0" value="<?php echo isset($date_collected) ? $date_collected : ''; ?>" required>
+                </div>
+                <div class="form-group">
+                    <label for="collected_by" class="control-label">Collected By</label>
+                    <input name="collected_by" id="collected_by" type="text" class="form-control form-control-sm rounded-0" value="<?php echo isset($collected_by) ? $collected_by : ''; ?>" required>
+                </div>
+
             </div>
             <div class="col-md-6">
                 <table class="table table-stripped table-bordered">
@@ -68,30 +84,25 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
                         </tr>
                     </thead>
                     <tbody>
-                        <?php
-                        $collection_item = [];
-                        if (isset($id)) {
-                            $collection_qry = $conn->query("SELECT * FROM `collection_items` where collection_id = '{$id}' ");
-                            while ($row = $collection_qry->fetch_assoc()) {
-                                $collection_item[$row['category_id']] = $row;
-                            }
-                        }
-                        $category = $conn->query("SELECT * FROM `category_list` where delete_flag = 0 and `status` = 1 " . (isset($id) ? " or id in (SELECT category_id FROM `collection_items` where collection_id = '{$id}') " : "") . " order by `name` asc ");
-                        while ($row = $category->fetch_assoc()) :
+                        <?php while ($row = $category->fetch_assoc()) :
+                            $checked = in_array($row['id'], $collected_categories) ? 'checked' : '';
+                            $disabled = in_array($row['id'], $collected_categories) ? 'disabled' : '';
                         ?>
                             <tr>
                                 <td class="px-2 py-1 align-middle text-center">
-                                    <input type="hidden" class="fee" name="fee[<?= $row['id'] ?>]" value="<?= (isset($collection_item[$row['id']])) ? ($collection_item[$row['id']]['fee']) : ($row['fee']) ?>">
+                                    <input type="hidden" class="fee" name="fee[<?= $row['id'] ?>]" value="<?= $row['fee'] ?>">
                                     <div class="custom-control custom-checkbox">
-                                        <input name="category_id[<?= $row['id'] ?>]" class="custom-control-input custom-control-input-primary custom-control-input-outline check-item" type="checkbox" id="cat_<?= $row['id'] ?>" value="<?= $row['id'] ?>" <?= (isset($collection_item[$row['id']])) ? 'checked' : '' ?>>
+                                        <input name="category_id[<?= $row['id'] ?>]" class="custom-control-input custom-control-input-primary custom-control-input-outline check-item" type="checkbox" id="cat_<?= $row['id'] ?>" value="<?= $row['id'] ?>" <?= $checked ?> <?= $disabled ?>>
                                         <label for="cat_<?= $row['id'] ?>" class="custom-control-label"></label>
                                     </div>
                                 </td>
-                                <td class="px-2 py-1 align-middle"><?= $row['name'] ?></td>
-                                <td class="px-2 py-1 align-middle"><?= (isset($collection_item[$row['id']])) ? format_num($collection_item[$row['id']]['fee']) : format_num($row['fee']) ?></td>
+                                <td class="px-2 py-1 align-middle category-text <?= $disabled ? 'disabled-text' : '' ?>"><?= $row['name'] ?></td>
+                                <td class="px-2 py-1 align-middle fee-text <?= $disabled ? 'disabled-text' : '' ?>"><?= format_num($row['fee']) ?></td>
                             </tr>
                         <?php endwhile; ?>
                     </tbody>
+
+
                 </table>
                 <div class="form-group">
                     <label for="total_amount" class="control-label">Total Collection</label>
@@ -208,4 +219,78 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
             ]
         })
     })
+    $(document).ready(function() {
+        function toggleCategoryElements(memberSelected) {
+            if (!memberSelected) {
+                // Disable all category checkboxes, texts, and fees if no member is selected
+                $('.check-item').prop('disabled', true).prop('checked', false);
+                $('#checkall').prop('disabled', true).prop('checked', false);
+                $('.category-text, .fee-text').addClass('disabled-text');
+            } else {
+                // Enable all category checkboxes, texts, and fees
+                $('.check-item').prop('disabled', false);
+                $('#checkall').prop('disabled', false);
+                $('.category-text, .fee-text').removeClass('disabled-text');
+
+                // Fetch the categories that the member already has
+                $.ajax({
+                    url: 'get_collected_categories.php', // Ensure this path is correct
+                    type: 'GET',
+                    data: {
+                        member_id: memberSelected
+                    },
+                    dataType: 'json',
+                    success: function(response) {
+                        console.log('AJAX Response:', response); // Debugging line
+
+                        // Response is an array of collected category IDs
+                        $('.check-item').each(function() {
+                            var category_id = $(this).val();
+                            if (response.includes(parseInt(category_id))) {
+                                $(this).prop('checked', true).prop('disabled', true);
+                                $(this).closest('tr').find('.category-text, .fee-text').addClass('disabled-text');
+                            } else {
+                                $(this).prop('checked', false).prop('disabled', false);
+                                $(this).closest('tr').find('.category-text, .fee-text').removeClass('disabled-text');
+                            }
+                        });
+                        calc_total();
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('AJAX Error:', status, error); // Debugging line
+                        console.log('Response Text:', xhr.responseText); // Check full response
+                    }
+                });
+            }
+        }
+
+        // Call the function on page load if a member is already selected
+        var initialMemberSelected = $('#member_id').val();
+        toggleCategoryElements(initialMemberSelected);
+
+        // Add event listener to member select dropdown
+        $('#member_id').change(function() {
+            var memberSelected = $(this).val();
+            toggleCategoryElements(memberSelected);
+        });
+
+        // Existing functionality for check all and calculate total
+        _checkAll();
+        calc_total();
+        $('.check-item').change(function() {
+            _checkAll();
+            calc_total();
+        });
+        $('#checkall').change(function() {
+            if ($(this).is(':checked') == true) {
+                $('.check-item').prop('checked', true).trigger('change')
+            } else {
+                $('.check-item').prop('checked', false).trigger('change')
+            }
+            _checkAll();
+            calc_total();
+        });
+
+        // Form submission and other setup code...
+    });
 </script>

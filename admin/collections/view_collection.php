@@ -38,13 +38,13 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
 		<div class="col-md-6">
 			<dl>
 				<dt class="text-muted">Ref. Code</dt>
-				<dd class="pl-3"><?= isset($code) ? $code : "" ?></dd>
+				<dd class="pl-3" style="color: red; font-size:1.5em; font-weight:bold;"><?= isset($code) ? $code : "" ?></dd>
+				<dt class="text-muted">Student Name</dt>
+				<dd class="pl-3"><?= isset($fullname) ? ($fullname) : "" ?></dd>
 				<dt class="text-muted">Date Collected</dt>
 				<dd class="pl-3"><?= isset($date_collected) ? date("D F d, Y", strtotime($date_collected)) : "" ?></dd>
 				<dt class="text-muted">Collected By</dt>
 				<dd class="pl-3"><?= isset($collected_by) ? ($collected_by) : "" ?></dd>
-				<dt class="text-muted">Student Name</dt>
-				<dd class="pl-3"><?= isset($fullname) ? ($fullname) : "" ?></dd>
 			</dl>
 		</div>
 		<div class="col-md-6">
@@ -98,7 +98,7 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
 		</div>
 		<div class="col-auto flex-shrink-1 flex-grow-1 px-4">
 			<h4 class="text-center m-0"><?= $_settings->info('name') ?></h4>
-			<h3 class="text-center m-0"><b>Collection Reciept</b></h3>
+			<h3 class="text-center m-0"><b>Collection Receipt</b></h3>
 
 
 		</div>
