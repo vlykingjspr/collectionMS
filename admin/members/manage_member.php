@@ -49,10 +49,10 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
 						?>>Female</option>
 			</select> -->
 		</div>
-		<!-- <div class="form-group">
-			<label for="rfid" class="control-label">rfid #</label>
+		<div class="form-group">
+			<label for="rfid" class="control-label">RF ID #</label>
 			<input name="rfid" id="rfid" type="text" class="form-control form-control-sm rounded-0" value="<?php echo isset($rfid) ? $rfid : ''; ?>" required>
-		</div> -->
+		</div>
 		<div class="form-group">
 			<label for="program_id" class="control-label">Program</label>
 			<select name="program_id" id="program_id" class="form-control form-control-sm rounded-0 select2" required>
@@ -67,7 +67,15 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
 		</div>
 		<div class="form-group">
 			<label for="year" class="control-label">Year Level</label>
-			<input name="year" id="year" type="text" class="form-control form-control-sm rounded-0 text-left" value="<?php echo isset($year) ? $year : ''; ?>" required>
+			<select name="year" id="year" class="form-control form-control-sm rounded-0 select2" required>
+				<option value="" <?php echo isset($year) && $year == '' ? 'selected' : '' ?>></option>
+				<option value="1" <?php echo isset($year) && $year == 1 ? 'selected' : '' ?>>1st Year</option>
+				<option value="2" <?php echo isset($year) && $year == 2 ? 'selected' : '' ?>>2nd Year</option>
+				<option value="3" <?php echo isset($year) && $year == 3 ? 'selected' : '' ?>>3rd Year</option>
+				<option value="4" <?php echo isset($year) && $year == 4 ? 'selected' : '' ?>>4th Year</option>
+			</select>
+			<!-- <input name="year" id="year" type="text" class="form-control form-control-sm rounded-0 text-left" value="<?php //echo isset($year) ? $year : ''; 
+																															?>" required> -->
 		</div>
 
 		<div class="form-group">
