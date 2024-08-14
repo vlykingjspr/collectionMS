@@ -1,7 +1,13 @@
 <?php
 require_once('./../../config.php');
 if (isset($_GET['id']) && $_GET['id'] > 0) {
-	$qry = $conn->query("SELECT c.*,CONCAT(m.lastname,', ', m.firstname,' ',COALESCE(m.middlename,'')) as fullname from `collection_list` c inner join student_list m on c.member_id = m.id where c.id = '{$_GET['id']}' ");
+	$qry = $conn->query("SELECT c.*, 
+                                CONCAT(m.lastname, ', ', m.firstname, ' ', COALESCE(m.middlename, '')) as fullname, 
+                                CONCAT(u.firstname, ' ', u.lastname) as collected_by_name 
+                         FROM `collection_list` c 
+                         INNER JOIN `student_list` m ON c.member_id = m.id 
+                         INNER JOIN `users` u ON c.collected_by = u.id 
+                         WHERE c.id = '{$_GET['id']}'");
 	if ($qry->num_rows > 0) {
 		foreach ($qry->fetch_assoc() as $k => $v) {
 			$$k = $v;
@@ -44,7 +50,8 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
 				<dt class="text-muted">Date Collected</dt>
 				<dd class="pl-3"><?= isset($date_collected) ? date("D F d, Y", strtotime($date_collected)) : "" ?></dd>
 				<dt class="text-muted">Collected By</dt>
-				<dd class="pl-3"><?= isset($collected_by) ? ($collected_by) : "" ?></dd>
+				<!-- <dd class="pl-3"><?= isset($collected_by) ? ($collected_by) : "" ?></dd> -->
+				<dd class="pl-3"><?= isset($collected_by_name) ? $collected_by_name : "" ?></dd>
 			</dl>
 		</div>
 		<div class="col-md-6">

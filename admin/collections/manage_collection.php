@@ -1,34 +1,29 @@
 <?php
 require_once('./../../config.php');
+$user = $conn->query("SELECT * FROM users where id ='" . $_settings->userdata('id') . "'");
 
-$member_id = isset($_GET['mid']) ? $_GET['mid'] : null;
-$collected_categories = [];
-
-if ($member_id) {
-    // Query to find all collected categories for the selected member
-    $collected_qry = $conn->query("
-        SELECT ci.category_id 
-        FROM collection_items ci 
-        INNER JOIN collection_list cl ON ci.collection_id = cl.id 
-        WHERE cl.member_id = '{$member_id}'
-    ");
-
-    // Debugging: Check what category IDs are being retrieved
-    while ($row = $collected_qry->fetch_assoc()) {
-        $collected_categories[] = $row['category_id'];
+if (isset($_GET['id']) && $_GET['id'] > 0) {
+    $qry = $conn->query("SELECT * from `collection_list` where id = '{$_GET['id']}'");
+    if ($qry->num_rows > 0) {
+        foreach ($qry->fetch_assoc() as $k => $v) {
+            $$k = $v;
+        }
+        $logged_in_user_id = $_SESSION['id'];
+    } else {
+?>
+        <center>Unknown Collection ID</center>
+        <style>
+            #uni_modal .modal-footer {
+                display: none
+            }
+        </style>
+        <div class="text-right">
+            <button class="btn btndefault bg-gradient-dark btn-flat" data-dismiss="modal"><i class="fa fa-times"></i> Close</button>
+        </div>
+<?php
+        exit;
     }
-
-    // Debugging output
-    // Uncomment the following line to see the collected categories
-
-    echo ("." . print_r($collected_categories));
 }
-$category = $conn->query("
-    SELECT * 
-    FROM `category_list` 
-    WHERE delete_flag = 0 AND `status` = 1 
-    ORDER BY `name` ASC
-");
 ?>
 <style>
     .disabled-text {
@@ -60,14 +55,19 @@ $category = $conn->query("
                     </div>
                 <?php endif; ?>
                 <div class="form-group">
-                    <label for="date_collected" class="control-label">Date Collected</label>
+                    <label for="date_collected" class="control-label">Date Collecteds</label>
                     <input name="date_collected" id="date_collected" type="date" class="form-control form-control-sm rounded-0" value="<?php echo isset($date_collected) ? $date_collected : ''; ?>" required>
                 </div>
+                <!-- <div class="form-group">
+                    <label for="collected_by" class="control-label">Collected By</label>
+                    <input name="collected_by" id="collected_by" type="text" class="form-control form-control-sm rounded-0" value="<?php //echo isset($collected_by) ? $collected_by : ''; 
+                                                                                                                                    ?>" required>
+                </div> -->
                 <div class="form-group">
                     <label for="collected_by" class="control-label">Collected By</label>
-                    <input name="collected_by" id="collected_by" type="text" class="form-control form-control-sm rounded-0" value="<?php echo isset($collected_by) ? $collected_by : ''; ?>" required>
+                    <input name="collected_by" id="collected_by" type="text" class="form-control form-control-sm rounded-0" value="<?php echo $_settings->userdata('firstname') ?>" readonly>
                 </div>
-
+                <input type="hidden" name="collected_by" value="<?php echo $_settings->userdata('id') ?>">
             </div>
             <div class="col-md-6">
                 <table class="table table-stripped table-bordered">
@@ -84,20 +84,27 @@ $category = $conn->query("
                         </tr>
                     </thead>
                     <tbody>
-                        <?php while ($row = $category->fetch_assoc()) :
-                            $checked = in_array($row['id'], $collected_categories) ? 'checked' : '';
-                            $disabled = in_array($row['id'], $collected_categories) ? 'disabled' : '';
+                        <?php
+                        $collection_item = [];
+                        if (isset($id)) {
+                            $collection_qry = $conn->query("SELECT * FROM `collection_items` where collection_id = '{$id}' ");
+                            while ($row = $collection_qry->fetch_assoc()) {
+                                $collection_item[$row['category_id']] = $row;
+                            }
+                        }
+                        $category = $conn->query("SELECT * FROM `category_list` where delete_flag = 0 and `status` = 1 " . (isset($id) ? " or id in (SELECT category_id FROM `collection_items` where collection_id = '{$id}') " : "") . " order by `name` asc ");
+                        while ($row = $category->fetch_assoc()) :
                         ?>
                             <tr>
                                 <td class="px-2 py-1 align-middle text-center">
-                                    <input type="hidden" class="fee" name="fee[<?= $row['id'] ?>]" value="<?= $row['fee'] ?>">
+                                    <input type="hidden" class="fee" name="fee[<?= $row['id'] ?>]" value="<?= (isset($collection_item[$row['id']])) ? ($collection_item[$row['id']]['fee']) : ($row['fee']) ?>">
                                     <div class="custom-control custom-checkbox">
-                                        <input name="category_id[<?= $row['id'] ?>]" class="custom-control-input custom-control-input-primary custom-control-input-outline check-item" type="checkbox" id="cat_<?= $row['id'] ?>" value="<?= $row['id'] ?>" <?= $checked ?> <?= $disabled ?>>
+                                        <input name="category_id[<?= $row['id'] ?>]" class="custom-control-input custom-control-input-primary custom-control-input-outline check-item" type="checkbox" id="cat_<?= $row['id'] ?>" value="<?= $row['id'] ?>" <?= (isset($collection_item[$row['id']])) ? 'checked' : '' ?>>
                                         <label for="cat_<?= $row['id'] ?>" class="custom-control-label"></label>
                                     </div>
                                 </td>
-                                <td class="px-2 py-1 align-middle category-text <?= $disabled ? 'disabled-text' : '' ?>"><?= $row['name'] ?></td>
-                                <td class="px-2 py-1 align-middle fee-text <?= $disabled ? 'disabled-text' : '' ?>"><?= format_num($row['fee']) ?></td>
+                                <td class="px-2 py-1 align-middle"><?= $row['name'] ?></td>
+                                <td class="px-2 py-1 align-middle"><?= (isset($collection_item[$row['id']])) ? format_num($collection_item[$row['id']]['fee']) : format_num($row['fee']) ?></td>
                             </tr>
                         <?php endwhile; ?>
                     </tbody>

@@ -1,4 +1,7 @@
-<?php $month = isset($_GET['month']) ? $_GET['month'] : date("Y-m"); ?>
+<?php
+$user = $conn->query("SELECT * FROM users where id ='" . $_settings->userdata('id') . "'");
+
+$month = isset($_GET['month']) ? $_GET['month'] : date("Y-m"); ?>
 <div class="content py-3 mt-3">
     <div class="card card-outline card-navy shadow rounded-0">
         <div class="card-header">
@@ -30,16 +33,15 @@
                                 <col width="5%">
                                 <col width="15%">
                                 <col width="15%">
-                                <col width="15%">
                                 <col width="30%">
-                                <col width="20%">
+                                <col width="50%">
                             </colgroup>
                             <thead>
                                 <tr class="">
                                     <th class="text-center align-middle py-1">#</th>
                                     <th class="text-center align-middle py-1">Date Created</th>
                                     <th class="text-center align-middle py-1">Date Collected</th>
-                                    <th class="text-center align-middle py-1">Collected By</th>
+                                    <!-- <th class="text-center align-middle py-1">Collected By</th> -->
                                     <th class="text-center align-middle py-1">Student</th>
                                     <th class="text-center align-middle py-1">Amount</th>
                                 </tr>
@@ -50,7 +52,18 @@
                                 $total = 0;
                                 $phases = $conn->query("SELECT * FROM `program_list` where id in (SELECT program_id FROM `student_list` where id in (SELECT member_id FROM collection_list where  date_format(date_collected,'%Y-%m') = '{$month}'))");
                                 $phase_arr = array_column($phases->fetch_all(MYSQLI_ASSOC), 'name', 'id');
-                                $qry = $conn->query("SELECT c.*,CONCAT(m.firstname, ' ', COALESCE(m.middlename,''), ' ', m.lastname) as fullname, m.program_id,m.year,m.set from `collection_list` c inner join student_list m on c.member_id = m.id where date_format(c.date_collected,'%Y-%m') = '{$month}' order by date(c.date_collected) desc,(CONCAT(m.firstname, ' ', COALESCE(m.middlename,''), ' ', m.lastname)) asc ");
+                                if ($_settings->userdata('id') == 1) {
+                                    //all collection for the month
+                                    $qry = $conn->query("SELECT c.*,CONCAT(m.firstname, ' ', COALESCE(m.middlename,''), ' ', m.lastname) as fullname, m.program_id,m.year,m.set from `collection_list` c inner join student_list m on c.member_id = m.id where date_format(c.date_collected,'%Y-%m') = '{$month}' order by date(c.date_collected) desc,(CONCAT(m.firstname, ' ', COALESCE(m.middlename,''), ' ', m.lastname)) asc ");
+                                } else {
+                                    //spefic collection for the user
+                                    $qry = $conn->query("SELECT c.*, CONCAT(m.firstname, ' ', COALESCE(m.middlename,''), ' ', m.lastname) AS fullname, m.program_id, m.year, m.set 
+                                FROM `collection_list` c 
+                                INNER JOIN `student_list` m ON c.member_id = m.id 
+                                WHERE date_format(c.date_collected, '%Y-%m') = '{$month}' 
+                                AND c.collected_by = '{$_settings->userdata('id')}' 
+                                ORDER BY date(c.date_collected) DESC, (CONCAT(m.firstname, ' ', COALESCE(m.middlename,''), ' ', m.lastname)) ASC");
+                                }
                                 while ($row = $qry->fetch_assoc()) :
                                     $total += $row['total_amount'];
                                 ?>
@@ -58,7 +71,7 @@
                                         <td class="text-center align-middle px-2 py-1"><?php echo $i++; ?></td>
                                         <td class="align-middle px-2 py-1"><?php echo date("Y-m-d H:i", strtotime($row['date_created'])) ?></td>
                                         <td class="align-middle px-2 py-1"><?php echo date("D F d, Y", strtotime($row['date_collected'])) ?></td>
-                                        <td class="align-middle px-2 py-1"><?php echo ucwords($row['collected_by']) ?></td>
+                                        <!-- <td class="align-middle px-2 py-1"><?php echo ucwords($row['collected_by']) ?></td> -->
                                         <td class="align-middle px-2 py-1">
                                             <div><?php echo ucwords($row['fullname']) ?></div>
                                             <small class="text-muted"><?= ucwords((isset($phase_arr[$row['program_id']]) ? $phase_arr[$row['program_id']] : "N/A"))
@@ -71,7 +84,7 @@
                             </tbody>
                             <tfoot>
                                 <tr>
-                                    <th class="text-center px-1 py-1 align-middel" colspan="5">Total</th>
+                                    <th class="text-center px-1 py-1 align-middel" colspan="4">Total</th>
                                     <th class="text-right px-1 py-1 align-middel"><?= format_num($total) ?></th>
                                 </tr>
                             </tfoot>
