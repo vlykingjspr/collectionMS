@@ -67,9 +67,9 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
                             <div class="col-auto flex-shrink-1 flex-grow-1 headtitle">
                                 <h4>Collection(s)</h4>
                             </div>
-                            <div class="col-auto">
+                            <!-- <div class="col-auto">
                                 <button class="btn btn-flat btn-sm btn-default bg-navy" id="new_collection"><i class="fa fa-plus"></i> Add Collection</button>
-                            </div>
+                            </div> -->
                             <div class="col-auto">
                                 <button class="btn btn-flat btn-sm btn-default bg-gradient-primary" id="print_receipt"><i class="fa fa-print"></i> Print</button>
                             </div>
