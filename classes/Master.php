@@ -198,7 +198,7 @@ class Master extends DBConnection
 		}
 		extract($_POST);
 		$data = "";
-		$c_fields = ['code', 'member_id', 'total_amount', 'date_collected', 'collected_by'];
+		$c_fields = ['code', 'member_id', 'total_amount', 'date_collected', 'collected_by', 'cash'];
 		foreach ($_POST as $k => $v) {
 			if (in_array($k, $c_fields)) {
 				if (!empty($data)) $data .= ",";

@@ -113,8 +113,17 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
                 </table>
                 <div class="form-group">
                     <label for="total_amount" class="control-label">Total Collection</label>
-                    <input name="total_amount" id="total_amount" type="text" class="form-control form-control-sm rounded-0" value="<?php echo isset($total_amount) ? $total_amount : 0; ?>" readonly tabindex="-1">
+                    <input name="total_amount" id="total_amount" type="text" class="form-control form-control-sm rounded-0" value="<?php echo "Php" . isset($total_amount) ? $total_amount : 0; ?>" readonly tabindex="-1">
                 </div>
+                <div class="form-group">
+                    <label for="cash" class="control-label">Cash</label>
+                    <input name="cash" id="cash" type="number" class="form-control form-control-sm rounded-0" oninput="calculateChange()" value="" required>
+                </div>
+                <div class="form-group">
+                    <label for="change" class="control-label">Change</label>
+                    <input name="change" id="change" type="text" class="form-control form-control-sm rounded-0" readonly tabindex="-1">
+                </div>
+
             </div>
         </div>
     </form>
@@ -127,6 +136,18 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
             $('#checkall').prop('checked', true)
         } else {
             $('#checkall').prop('checked', false)
+        }
+    }
+
+    function calculateChange() {
+        var totalAmount = parseFloat(document.getElementById('total_amount').value) || 0;
+        var cash = parseFloat(document.getElementById('cash').value) || 0;
+        var change = cash - totalAmount;
+
+        if (change < 0) {
+            document.getElementById('change').value = 'Invalid payment';
+        } else {
+            document.getElementById('change').value = change.toFixed(2);
         }
     }
 
@@ -298,6 +319,5 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
             calc_total();
         });
 
-        // Form submission and other setup code...
     });
 </script>
