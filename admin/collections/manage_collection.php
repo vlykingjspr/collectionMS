@@ -248,59 +248,6 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
         })
     })
     $(document).ready(function() {
-        function toggleCategoryElements(memberSelected) {
-            if (!memberSelected) {
-                // Disable all category checkboxes, texts, and fees if no member is selected
-                $('.check-item').prop('disabled', true).prop('checked', false);
-                $('#checkall').prop('disabled', true).prop('checked', false);
-                $('.category-text, .fee-text').addClass('disabled-text');
-            } else {
-                // Enable all category checkboxes, texts, and fees
-                $('.check-item').prop('disabled', false);
-                $('#checkall').prop('disabled', false);
-                $('.category-text, .fee-text').removeClass('disabled-text');
-
-                // Fetch the categories that the member already has
-                $.ajax({
-                    url: 'get_collected_categories.php', // Ensure this path is correct
-                    type: 'GET',
-                    data: {
-                        member_id: memberSelected
-                    },
-                    dataType: 'json',
-                    success: function(response) {
-                        console.log('AJAX Response:', response); // Debugging line
-
-                        // Response is an array of collected category IDs
-                        $('.check-item').each(function() {
-                            var category_id = $(this).val();
-                            if (response.includes(parseInt(category_id))) {
-                                $(this).prop('checked', true).prop('disabled', true);
-                                $(this).closest('tr').find('.category-text, .fee-text').addClass('disabled-text');
-                            } else {
-                                $(this).prop('checked', false).prop('disabled', false);
-                                $(this).closest('tr').find('.category-text, .fee-text').removeClass('disabled-text');
-                            }
-                        });
-                        calc_total();
-                    },
-                    error: function(xhr, status, error) {
-                        console.error('AJAX Error:', status, error); // Debugging line
-                        console.log('Response Text:', xhr.responseText); // Check full response
-                    }
-                });
-            }
-        }
-
-        // Call the function on page load if a member is already selected
-        var initialMemberSelected = $('#member_id').val();
-        toggleCategoryElements(initialMemberSelected);
-
-        // Add event listener to member select dropdown
-        $('#member_id').change(function() {
-            var memberSelected = $(this).val();
-            toggleCategoryElements(memberSelected);
-        });
 
         // Existing functionality for check all and calculate total
         _checkAll();
