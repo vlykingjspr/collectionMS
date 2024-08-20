@@ -2,12 +2,13 @@
 require_once('./../../config.php');
 if (isset($_GET['id']) && $_GET['id'] > 0) {
 	$qry = $conn->query("SELECT c.*, 
-                                CONCAT(m.lastname, ', ', m.firstname, ' ', COALESCE(m.middlename, '')) as fullname, 
-                                CONCAT(u.firstname, ' ', u.lastname) as collected_by_name 
-                         FROM `collection_list` c 
-                         INNER JOIN `student_list` m ON c.member_id = m.id 
-                         INNER JOIN `users` u ON c.collected_by = u.id 
-                         WHERE c.id = '{$_GET['id']}'");
+                            CONCAT(m.lastname, ', ', m.firstname, ' ', COALESCE(m.middlename, '')) as fullname, 
+                            CONCAT(u.firstname, ' ', u.lastname) as collected_by_name 
+                     FROM `collection_list` c 
+                     INNER JOIN `student_list` m ON c.member_id = m.id 
+                     INNER JOIN `users` u ON c.collected_by = u.id 
+                     WHERE c.id = '{$_GET['id']}'
+                     ORDER BY c.date_created DESC");
 	if ($qry->num_rows > 0) {
 		foreach ($qry->fetch_assoc() as $k => $v) {
 			$$k = $v;

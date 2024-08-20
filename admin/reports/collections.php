@@ -120,7 +120,7 @@ if (isset($_POST['programYearSet'])) {
     ob_start();
 
     // Display the data in a table
-    echo '<table class="table table-hover  table-bordered table-stripped">';
+    echo '<table class="table table-hover  table-bordered table-stripped " style="margin-top: 0px;">';
     echo '<thead>';
     echo '<tr>';
     echo '<th>Student Name</th>';
@@ -294,7 +294,15 @@ if (isset($_POST['programYearSet'])) {
                         <!-- Summary by Category Tab -->
                         <div class="tab-pane fade" id="summary" role="tabpanel" aria-labelledby="summary-tab">
                             <div class="mt-3">
-                                <table class="table table-hover table-bordered table-stripped">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <div class="table-title">
+                                        <h5>Total Collection per Set</h5> <!-- Optional title, you can remove if not needed -->
+                                    </div>
+                                    <button class="btn btn-light border btn-flat btn-sm" type="button" id="print-summary">
+                                        <i class="fa fa-print"></i> Print
+                                    </button>
+                                </div>
+                                <table class="table table-hover table-bordered table-stripped" id="summaryTable">
                                     <thead>
                                         <tr>
                                             <th>Program</th>
@@ -330,8 +338,14 @@ if (isset($_POST['programYearSet'])) {
                         <!-- Category by Category Tab -->
                         <div class="tab-pane fade" id="category" role="tabpanel" aria-labelledby="category-tab">
                             <div class="mt-3">
-                                <h5 class="mt-4">Total Collected by Program and Categories</h5>
-                                <table class="table table-hover  table-bordered table-stripped">
+
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <div class="table-title">
+                                        <h5>Total per Collection</h5> <!-- Optional title, you can remove if not needed -->
+                                    </div>
+                                    <button class="btn btn-light border btn-flat btn-sm mb-2" type="button" id="print-category"><i class="fa fa-print"></i> Print</button>
+                                </div>
+                                <table class="table table-hover  table-bordered table-stripped" id="categoryTable">
                                     <thead>
                                         <tr>
                                             <th>Set</th>
@@ -388,6 +402,12 @@ if (isset($_POST['programYearSet'])) {
                         <!-- Search by set -->
                         <div class="tab-pane fade" id="studperset" role="tabpanel" aria-labelledby="studentperset">
                             <div class="mt-3">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <div class="table-title">
+                                        <h5>Total per Student by Set</h5> <!-- Optional title, you can remove if not needed -->
+                                    </div>
+                                    <button class="btn btn-light border btn-flat btn-sm mb-2" type="button" id="print-studperset"><i class="fa fa-print"></i> Print</button>
+                                </div>
 
                                 <form id="filterForm">
                                     <div class="form-group">
@@ -402,10 +422,11 @@ if (isset($_POST['programYearSet'])) {
                                             <?php endforeach; ?>
                                         </select>
                                     </div>
-                                    <button type="button" id="loadDataBtn" class="btn btn-primary">Load Data</button>
+                                    <button type="button" id="loadDataBtn" class="btn btn-primary mb-4">Load Set</button>
                                 </form>
 
                                 <div id="tableContainer" class="">
+
                                     <!-- The table will be dynamically loaded here based on the selected program, year, and set -->
                                 </div>
                             </div>
@@ -418,7 +439,7 @@ if (isset($_POST['programYearSet'])) {
     </div>
 </div>
 
-<noscript id=" print-header">
+<noscript id="print-header">
     <style>
         #sys_logo {
             width: 5em !important;
@@ -439,39 +460,83 @@ if (isset($_POST['programYearSet'])) {
     </div>
     <hr>
 </noscript>
+
 <script>
     $(function() {
-
         // Handle tab click to add/remove bg-gradient-secondary class
         $('#collectionTabs a').on('click', function() {
             $('#collectionTabs a').removeClass('bg-gradient-secondary');
             $(this).addClass('bg-gradient-secondary');
         });
+
         $('#filter').submit(function(e) {
-            e.preventDefault()
+            e.preventDefault();
             location.href = "./?page=reports/collections&" + $(this).serialize();
-        })
-        $('#print').click(function() {
+        });
+
+        // Function to handle printing for each tab
+        function printTable(tableId, title) {
             start_loader();
-            var head = $('head').clone()
-            var p = $('#outprint').clone()
-            var el = $('<div>')
-            var header = $($('noscript#print-header').html()).clone()
-            head.find('title').text("Collection Monthly Report - Print View")
-            el.append(head)
-            el.append(header)
-            el.append(p)
-            var nw = window.open("", "_blank", "width=1000,height=900,top=50,left=75")
-            nw.document.write(el.html())
-            nw.document.close()
+
+            // Clone the head and content of the table to print
+            var head = $('head').clone();
+            var p = $(tableId).clone();
+            var el = $('<div>');
+
+            // Clone the noscript content and include it in the print document
+            var header = $($('noscript#print-header').html()).clone();
+            head.find('title').text(title + " - Print View");
+
+            // Create a title element to include above the table in the print view
+            var tableTitle = $('<h3>').text(title).css({
+                'text-align': 'center',
+                'margin-bottom': '20px'
+            });
+
+            // Append the cloned head, noscript header, title, and table content to the new document
+            el.append(head);
+            el.append(header); // Append the noscript header content
+            el.append(tableTitle); // Append the table title
+            el.append(p);
+
+            // Open a new window and write the content to it
+            var nw = window.open("", "_blank", "width=1000,height=900,top=50,left=75");
+            nw.document.write(el.html());
+            nw.document.close();
+
+            // Delay printing to allow the content to fully render
             setTimeout(() => {
-                nw.print()
+                nw.print();
                 setTimeout(() => {
-                    nw.close()
-                    end_loader()
+                    nw.close();
+                    end_loader();
                 }, 200);
             }, 500);
-        })
+        }
+
+
+
+        // Bind print button for the detailed collection tab
+        $('#print').click(function() {
+            printTable('#outprint', "Collection Monthly Report");
+        });
+
+        // Bind print button for the summary tab
+        $('#print-summary').click(function() {
+            printTable('#summaryTable', "Summary by Set");
+        });
+
+        // Bind print button for the category tab
+        $('#print-category').click(function() {
+            printTable('#categoryTable', "Total per Collection");
+        });
+
+        // Bind print button for the search by set tab
+        $('#print-studperset').click(function() {
+            printTable('#tableContainer', "Total per Student by Set");
+        });
+
+        // Load data for "Search by Set" tab
         $('#loadDataBtn').click(function() {
             var selectedValue = $('#programYearSet').val();
 
@@ -483,14 +548,35 @@ if (isset($_POST['programYearSet'])) {
                         programYearSet: selectedValue
                     },
                     success: function(response) {
-                        $('#tableContainer').html(response);
+                        // Split the selected value to get program, year, and set
+                        var splitValue = selectedValue.split('-');
+                        var program_id = splitValue[0];
+                        var year = splitValue[1];
+                        var set = splitValue[2];
+
+                        // Fetch the program name from the program_arr
+                        var program_name = "Unknown Program";
+                        <?php foreach ($program_arr as $id => $name) : ?>
+                            if (program_id == <?= $id ?>) {
+                                program_name = "<?= $name ?>";
+                            }
+                        <?php endforeach; ?>
+
+                        // Create the header text
+                        var headerText = program_name + " " + year + set;
+
+                        // Append the header and the table content
+                        $('#tableContainer').html(
+                            '<div class="table-header"><h5>' + headerText + '</h5></div>' +
+                            response
+                        );
                     }
                 });
             } else {
                 alert('Please select a valid option.');
             }
         });
-    })
+    });
 </script>
 <style>
     /* Hover effect for all tabs */
@@ -509,6 +595,7 @@ if (isset($_POST['programYearSet'])) {
 
     #tableContainer .content-wrapper {
         margin-left: 0px !important;
+        margin-top: 0px !important;
         background-color: white;
         padding-top: 0px !important;
     }
