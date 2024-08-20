@@ -97,15 +97,15 @@ if (isset($_POST['programYearSet'])) {
     // Fetch data based on the selected combination
     $result = $conn->query("
        SELECT 
-        CONCAT(s.lastname, ', ', s.firstname, ' ', s.middlename) AS student_name,  -- Update the name formatting here
+        CONCAT(s.lastname, ', ', s.firstname, ' ', s.middlename) AS student_name, 
         ci.category_id, 
         SUM(ci.fee) as total_fee 
     FROM 
-        collection_items ci
-    INNER JOIN 
-        collection_list cl ON ci.collection_id = cl.id
-    INNER JOIN 
-        student_list s ON cl.member_id = s.id 
+        student_list s
+    LEFT JOIN 
+        collection_list cl ON s.id = cl.member_id AND cl.date_collected IS NOT NULL
+    LEFT JOIN 
+        collection_items ci ON cl.id = ci.collection_id 
     WHERE 
         s.program_id = '$program_id' 
         AND s.year = '$year' 
@@ -147,11 +147,11 @@ if (isset($_POST['programYearSet'])) {
             ];
         }
 
-        $student_data[$student_name]['categories'][$category_id] = $total_fee;
-        $student_data[$student_name]['total'] += $total_fee;
+        $student_data[$student_name]['categories'][$category_id] = $total_fee ? $total_fee : 0;
+        $student_data[$student_name]['total'] += $total_fee ? $total_fee : 0;
 
         // Add to grand total
-        $grand_total += $total_fee;
+        $grand_total += $total_fee ? $total_fee : 0;
     }
 
     foreach ($student_data as $student_name => $data) {
@@ -177,6 +177,7 @@ if (isset($_POST['programYearSet'])) {
     echo ob_get_clean();
     exit; // Terminate the script after sending the response
 }
+
 ?>
 
 
