@@ -52,7 +52,7 @@
                 <a href="<?php echo base_url ?>admin/?page=reports/collections" class="nav-link nav-reports_collections">
                   <i class="nav-icon fas fa-calendar"></i>
                   <p>
-                    Monthly Collection Report
+                    Reports
                   </p>
                 </a>
               </li>
