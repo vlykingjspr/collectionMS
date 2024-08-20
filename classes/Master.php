@@ -196,7 +196,13 @@ class Master extends DBConnection
 			}
 			$_POST['code'] = $prefix . $code;
 		}
+
+		// Extract values from POST data
 		extract($_POST);
+
+		// Debugging: Log total_amount value to see if it's being received correctly
+		error_log("Total Amount Received: " . $total_amount);
+
 		$data = "";
 		$c_fields = ['code', 'member_id', 'total_amount', 'date_collected', 'collected_by', 'cash'];
 		foreach ($_POST as $k => $v) {
@@ -211,7 +217,9 @@ class Master extends DBConnection
 		} else {
 			$sql = "UPDATE `collection_list` set {$data} where id = '{$id}' ";
 		}
+
 		$save = $this->conn->query($sql);
+
 		if ($save) {
 			$cid = empty($id) ? $this->conn->insert_id : $id;
 			$resp['cid'] = $cid;
@@ -252,6 +260,44 @@ class Master extends DBConnection
 		if ($resp['status'] == 'success')
 			$this->settings->set_flashdata('success', $resp['msg']);
 		return json_encode($resp);
+	}
+
+	function get_categories()
+	{
+		$member_id = $_POST['member_id'];
+
+		// Fetch categories that are not already associated with the member
+		$category_query = "
+			SELECT * 
+			FROM `category_list` 
+			WHERE delete_flag = 0 
+			AND `status` = 1 
+			AND id NOT IN (
+				SELECT category_id 
+				FROM `collection_items` 
+				WHERE collection_id IN (
+					SELECT id 
+					FROM `collection_list` 
+					WHERE member_id = '$member_id'
+				)
+			)
+			ORDER BY `name` ASC
+		";
+
+		$categories = $this->conn->query($category_query);
+		$category_list = [];
+
+		while ($row = $categories->fetch_assoc()) {
+			$category_list[] = [
+				'id' => $row['id'],
+				'name' => $row['name'],
+				'fee' => number_format($row['fee'], 2)  // Formatting fee as per your needs
+			];
+		}
+
+		// Return the list of categories as a JSON response
+		echo json_encode(['categories' => $category_list]);
+		exit;
 	}
 	function delete_collection()
 	{
@@ -296,6 +342,10 @@ switch ($action) {
 	case 'delete_collection':
 		echo $Master->delete_collection();
 		break;
+	case 'get_categories':  // Add the case for fetching categories
+		echo $Master->get_categories();
+		break;
+
 	default:
 		// echo $sysset->index();
 		break;

@@ -1,10 +1,7 @@
 <?php
 require_once('./../../config.php');
-
-// Fetch logged-in user data
 $user = $conn->query("SELECT * FROM users where id ='" . $_settings->userdata('id') . "'");
 
-// Check if a collection ID is provided and fetch the collection details
 if (isset($_GET['id']) && $_GET['id'] > 0) {
     $qry = $conn->query("SELECT * from `collection_list` where id = '{$_GET['id']}'");
     if ($qry->num_rows > 0) {
@@ -29,10 +26,6 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
 }
 ?>
 <style>
-    #submit {
-        display: none;
-    }
-
     .disabled-text {
         color: #ccc;
         /* Light grey color to indicate disabled state */
@@ -62,9 +55,14 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
                     </div>
                 <?php endif; ?>
                 <div class="form-group">
-                    <label for="date_collected" class="control-label">Date Collected</label>
+                    <label for="date_collected" class="control-label">Date Collecteds</label>
                     <input name="date_collected" id="date_collected" type="date" class="form-control form-control-sm rounded-0" value="<?php echo isset($date_collected) ? $date_collected : ''; ?>" required>
                 </div>
+                <!-- <div class="form-group">
+                    <label for="collected_by" class="control-label">Collected By</label>
+                    <input name="collected_by" id="collected_by" type="text" class="form-control form-control-sm rounded-0" value="<?php //echo isset($collected_by) ? $collected_by : ''; 
+                                                                                                                                    ?>" required>
+                </div> -->
                 <div class="form-group">
                     <label for="collected_by" class="control-label">Collected By</label>
                     <input name="collected_by" id="collected_by" type="text" class="form-control form-control-sm rounded-0" value="<?php echo $_settings->userdata('firstname') ?>" readonly>
@@ -85,13 +83,37 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
                             <th class="text-center">Fee</th>
                         </tr>
                     </thead>
-                    <tbody id="category-list">
-                        <!-- Dynamic category list will be rendered here -->
+                    <tbody>
+                        <?php
+                        $collection_item = [];
+                        if (isset($id)) {
+                            $collection_qry = $conn->query("SELECT * FROM `collection_items` where collection_id = '{$id}' ");
+                            while ($row = $collection_qry->fetch_assoc()) {
+                                $collection_item[$row['category_id']] = $row;
+                            }
+                        }
+                        $category = $conn->query("SELECT * FROM `category_list` where delete_flag = 0 and `status` = 1 " . (isset($id) ? " or id in (SELECT category_id FROM `collection_items` where collection_id = '{$id}') " : "") . " order by `name` asc ");
+                        while ($row = $category->fetch_assoc()) :
+                        ?>
+                            <tr>
+                                <td class="px-2 py-1 align-middle text-center">
+                                    <input type="hidden" class="fee" name="fee[<?= $row['id'] ?>]" value="<?= (isset($collection_item[$row['id']])) ? ($collection_item[$row['id']]['fee']) : ($row['fee']) ?>">
+                                    <div class="custom-control custom-checkbox">
+                                        <input name="category_id[<?= $row['id'] ?>]" class="custom-control-input custom-control-input-primary custom-control-input-outline check-item" type="checkbox" id="cat_<?= $row['id'] ?>" value="<?= $row['id'] ?>" <?= (isset($collection_item[$row['id']])) ? 'checked' : '' ?>>
+                                        <label for="cat_<?= $row['id'] ?>" class="custom-control-label"></label>
+                                    </div>
+                                </td>
+                                <td class="px-2 py-1 align-middle"><?= $row['name'] ?></td>
+                                <td class="px-2 py-1 align-middle"><?= (isset($collection_item[$row['id']])) ? format_num($collection_item[$row['id']]['fee']) : format_num($row['fee']) ?></td>
+                            </tr>
+                        <?php endwhile; ?>
                     </tbody>
+
+
                 </table>
                 <div class="form-group">
                     <label for="total_amount" class="control-label">Total Collection</label>
-                    <input name="total_amount" id="total_amount" type="text" class="form-control form-control-sm rounded-0" value="<?php echo isset($total_amount) ? $total_amount : 0; ?>" readonly tabindex="-1">
+                    <input name="total_amount" id="total_amount" type="text" class="form-control form-control-sm rounded-0" value="<?php echo "Php" . isset($total_amount) ? $total_amount : 0; ?>" readonly tabindex="-1">
                 </div>
                 <div class="form-group">
                     <label for="cash" class="control-label">Cash</label>
@@ -101,23 +123,24 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
                     <label for="change" class="control-label">Change</label>
                     <input name="change" id="change" type="text" class="form-control form-control-sm rounded-0" readonly tabindex="-1">
                 </div>
+
             </div>
         </div>
     </form>
 </div>
 <script>
     function _checkAll() {
-        var total = $('.check-item').length;
-        var checked = $('.check-item:checked').length;
+        var total = $('.check-item').length
+        var checked = $('.check-item:checked').length
         if (total == checked) {
-            $('#checkall').prop('checked', true);
+            $('#checkall').prop('checked', true)
         } else {
-            $('#checkall').prop('checked', false);
+            $('#checkall').prop('checked', false)
         }
     }
 
     function calculateChange() {
-        var totalAmount = parseFloat(document.getElementById('total_amount').value.replace('Php', '')) || 0;
+        var totalAmount = parseFloat(document.getElementById('total_amount').value) || 0;
         var cash = parseFloat(document.getElementById('cash').value) || 0;
         var change = cash - totalAmount;
 
@@ -136,126 +159,37 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
             total += parseFloat(fee)
         })
         $('#total_amount').val(total)
-
     }
-
-    function fetchCategories(member_id) {
-        $.ajax({
-            url: _base_url_ + "classes/Master.php?f=get_categories", // Your PHP endpoint to fetch categories
-            method: 'POST',
-            data: {
-                member_id: member_id
-            },
-            dataType: 'json',
-            success: function(resp) {
-                var html = '';
-                resp.categories.forEach(function(category) {
-                    html += `
-                        <tr>
-                            <td class="px-2 py-1 align-middle text-center">
-                                <input type="hidden" class="fee" name="fee[${category.id}]" value="${category.fee}">
-                                <div class="custom-control custom-checkbox">
-                                    <input name="category_id[${category.id}]" class="custom-control-input custom-control-input-primary custom-control-input-outline check-item" type="checkbox" id="cat_${category.id}" value="${category.id}">
-                                    <label for="cat_${category.id}" class="custom-control-label"></label>
-                                </div>
-                            </td>
-                            <td class="px-2 py-1 align-middle">${category.name}</td>
-                            <td class="px-2 py-1 align-middle">${category.fee}</td>
-                        </tr>
-                    `;
-                });
-                $('#category-list').html(html);
-                calc_total();
-                bindCheckboxEvents();
-            }
-        });
-    }
-
-    function bindCheckboxEvents() {
-        $('.check-item').change(function() {
-            _checkAll();
-            calc_total();
-        });
-
-        $('#checkall').change(function() {
-            if ($(this).is(':checked') == true) {
-                $('.check-item').prop('checked', true).trigger('change');
-            } else {
-                $('.check-item').prop('checked', false).trigger('change');
-            }
-            _checkAll();
-            calc_total();
-        });
-    }
-
-    function validateForm() {
-        var member_id = $('#member_id').val();
-        var date_collected = $('#date_collected').val();
-        var collected_by = $('#collected_by').val();
-        var total_amount = parseFloat($('#total_amount').val()) || 0;
-        var cash = parseFloat($('#cash').val()) || 0;
-
-        // Check if all required fields are filled
-        var allFieldsFilled = member_id && date_collected && collected_by;
-
-        // Check if cash is greater than or equal to the total amount
-        var isCashSufficient = cash >= total_amount;
-
-        // Show or hide the submit button based on the validation
-        if (allFieldsFilled && isCashSufficient && total_amount > 0) {
-            $('#submit').show();
-        } else {
-            $('#submit').hide();
-        }
-    }
-
     $(document).ready(function() {
-        // Initial form validation check
-        validateForm();
-
-        // Bind validation to input changes
-        $('#member_id, #date_collected, #cash').on('input change', function() {
-            validateForm();
-        });
-
-        // Bind checkbox event to recalculate total and validate form
-        $(document).on('change', '.check-item', function() {
-            calc_total();
-            validateForm();
-        });
         $('#uni_modal').on('shown.modal.bs', function() {
             $('.select2').select2({
                 placeholder: 'Please Select Here',
                 width: '100%',
                 dropdownParent: $('#uni_modal')
-            });
-        });
-
-        $('#member_id').change(function() {
-            var member_id = $(this).val();
-            fetchCategories(member_id);
-        });
-
-        // bindCheckboxEvents();
-
+            })
+        })
+        _checkAll()
+        calc_total();
+        $('.check-item').change(function() {
+            _checkAll();
+            calc_total();
+        })
+        $('#checkall').change(function() {
+            if ($(this).is(':checked') == true) {
+                $('.check-item').prop('checked', true).trigger('change')
+            } else {
+                $('.check-item').prop('checked', false).trigger('change')
+            }
+            _checkAll();
+            calc_total();
+        })
         $('#uni_modal #collection-form').submit(function(e) {
             e.preventDefault();
-            var _this = $(this);
-
-            // Recalculate total before submission to ensure it's correct
-            calc_total();
-            validateForm();
-
-            if (!$('#submit').is(':visible')) {
-                return false;
-            }
-
-
+            var _this = $(this)
             $('.err-msg').remove();
-            var el = $('<div>');
-            el.addClass("alert err-msg");
-            el.hide();
-
+            var el = $('<div>')
+            el.addClass("alert err-msg")
+            el.hide()
             if (_this[0].checkValidity() == false) {
                 _this[0].reportValidity();
                 return false;
@@ -275,10 +209,10 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
                 type: 'POST',
                 dataType: 'json',
                 error: err => {
-                    console.error(err);
-                    el.addClass('alert-danger').text("An error occurred");
-                    _this.prepend(el);
-                    el.show('.modal');
+                    console.error(err)
+                    el.addClass('alert-danger').text("An error occured");
+                    _this.prepend(el)
+                    el.show('.modal')
                     end_loader();
                 },
                 success: function(resp) {
@@ -286,18 +220,18 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
                         location.reload();
                     } else if (resp.status == 'failed' && !!resp.msg) {
                         el.addClass('alert-danger').text(resp.msg);
-                        _this.prepend(el);
-                        el.show('.modal');
+                        _this.prepend(el)
+                        el.show('.modal')
                     } else {
-                        el.text("An error occurred");
-                        console.error(resp);
+                        el.text("An error occured");
+                        console.error(resp)
                     }
                     $("html, body").scrollTop(0);
-                    end_loader();
-                }
-            });
-        });
+                    end_loader()
 
+                }
+            })
+        })
 
         $('.summernote').summernote({
             height: 200,
@@ -311,6 +245,26 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
                 ['table', ['table']],
                 ['view', ['undo', 'redo', 'fullscreen', 'codeview', 'help']]
             ]
+        })
+    })
+    $(document).ready(function() {
+
+        // Existing functionality for check all and calculate total
+        _checkAll();
+        calc_total();
+        $('.check-item').change(function() {
+            _checkAll();
+            calc_total();
         });
+        $('#checkall').change(function() {
+            if ($(this).is(':checked') == true) {
+                $('.check-item').prop('checked', true).trigger('change')
+            } else {
+                $('.check-item').prop('checked', false).trigger('change')
+            }
+            _checkAll();
+            calc_total();
+        });
+
     });
 </script>
