@@ -58,7 +58,8 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
                                         <span class="badge badge-danger bg-gradient-danger rounded-pill px-3">Inactive</span>
                                     <?php endif; ?>
                                 </dd>
-                                <dt class="incharge">Officer In-charge: __________________</dt>
+                                <dt class="text-muted">Officer:</dt>
+                                <dd class="pl-3"><?php echo ucwords($_settings->userdata('firstname') . ' ' . $_settings->userdata('lastname')) ?></dd>
                             </dl>
                         </div>
                     </div>
