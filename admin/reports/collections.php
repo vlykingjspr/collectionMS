@@ -487,15 +487,30 @@ if (isset($_POST['programYearSet'])) {
             var header = $($('noscript#print-header').html()).clone();
             head.find('title').text(title + " - Print View");
 
+            // Get the current date and format it
+            var currentDate = new Date();
+            var formattedDate = currentDate.toLocaleDateString("en-US", {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+
             // Create a title element to include above the table in the print view
             var tableTitle = $('<h3>').text(title).css({
                 'text-align': 'center',
                 'margin-bottom': '20px'
             });
 
-            // Append the cloned head, noscript header, title, and table content to the new document
+            // Create a date element to include in the top right corner
+            var dateElement = $('<div>').text(formattedDate).css({
+                'text-align': 'right',
+                'margin-bottom': '20px'
+            });
+
+            // Append the cloned head, noscript header, date, title, and table content to the new document
             el.append(head);
             el.append(header); // Append the noscript header content
+            el.append(dateElement); // Append the date element
             el.append(tableTitle); // Append the table title
             el.append(p);
 
@@ -513,8 +528,6 @@ if (isset($_POST['programYearSet'])) {
                 }, 200);
             }, 500);
         }
-
-
 
         // Bind print button for the detailed collection tab
         $('#print').click(function() {
